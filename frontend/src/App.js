@@ -8,7 +8,8 @@ const App = (props) => {
   const getTodos = function () {
     axios
       .get("/api/v1/tasks")
-      .then((res) => setTasks(res.data.data.data))
+      // .then((res) => setTasks(res.data.data.data))
+      .then((res) => console.log(res))
       .catch((err) => console.log(err));
   };
 
