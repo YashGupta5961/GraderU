@@ -1,28 +1,30 @@
 import { React, useState, useEffect } from "react";
-import axios from "axios";
+import api from "./api";
 
 const App = (props) => {
   const [inputVal, setInputVal] = useState("");
   const [tasks, setTasks] = useState([]);
 
   const getTodos = function () {
-    axios
-      .get("/api/v1/tasks")
-      // .then((res) => setTasks(res.data.data.data))
-      .then((res) => console.log(res))
+    api
+      .get("/tasks")
+      .then((res) => setTasks(res.data.data.data))
       .catch((err) => console.log(err));
   };
 
   const addTodo = function () {
-    axios
-      .post("/api/v1/tasks", { action: inputVal })
-      .then((res) => setTasks([...tasks, res.data.data.data]))
+    api
+      .post("/tasks", { action: inputVal })
+      .then((res) => {
+        setTasks([...tasks, res.data.data.data]);
+        setInputVal("");
+      })
       .catch((err) => console.log(err));
   };
 
   const deleteTodo = function (todoId) {
-    axios
-      .delete(`/api/v1/tasks/${todoId}`)
+    api
+      .delete(`/tasks/${todoId}`)
       .then((res) => {
         const filteredTodos = tasks.filter((task) => task._id !== todoId);
         setTasks(filteredTodos);
