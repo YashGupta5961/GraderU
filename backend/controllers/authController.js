@@ -123,14 +123,16 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
       status: "Success",
-      message: "OTP sent to phone number!",
+      message: "Password reset code has been sent to your registered email!",
     });
   } catch (err) {
     user.passwordResetOTP = undefined;
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
 
-    return next(new AppError("There was an error sending a reset OTP!", 500));
+    return next(
+      new AppError("There was an error sending a password reset code!", 500)
+    );
   }
 });
 
