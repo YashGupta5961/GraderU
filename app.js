@@ -9,10 +9,13 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const cors = require("cors");
 const AppError = require("./backend/utils/appError");
-// const { extractJWTCookieToHeader } = require("./utils/customMiddleware");
+const {
+  extractJWTCookieToHeader,
+} = require("./backend/utils/customMiddleware");
 const globalErrorHandler = require("./backend/controllers/errorController");
 
 const taskRouter = require("./backend/routes/taskRoutes");
+const userRouter = require("./backend/routes/userRoutes");
 
 const app = express();
 
@@ -45,11 +48,12 @@ app.use(xss()); // Data sanitization against XSS
 // }
 
 app.use(hpp()); // Prevent parameter pollution
-// app.use(extractJWTCookieToHeader()); // extract jwt cookie and set authorization header
+app.use(extractJWTCookieToHeader()); // extract jwt cookie and set authorization header
 app.use(compression());
 
 // routes
 app.use("/api/v1/tasks", taskRouter);
+app.use("/api/v1/users", userRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
