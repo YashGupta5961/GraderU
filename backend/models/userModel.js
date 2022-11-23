@@ -49,6 +49,7 @@ const userSchema = new mongoose.Schema({
 
 // Query middleware
 
+// encrypts password before saving to DB
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
@@ -57,6 +58,7 @@ userSchema.pre("save", async function (next) {
   // passwordConfirm is required field but the model only vaildates for inputs
 });
 
+// updates password changed time when password is updated
 userSchema.pre("save", function (next) {
   if (!this.isModified("password") || this.isNew) return next();
 
@@ -64,6 +66,7 @@ userSchema.pre("save", function (next) {
   next();
 });
 
+// deselects fields
 userSchema.pre(/^find/, function (next) {
   this.select("-__v -passwordChangedAt");
   next();
@@ -71,6 +74,7 @@ userSchema.pre(/^find/, function (next) {
 
 // Document middleware
 
+// compares encrypted passwords
 userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword
@@ -78,6 +82,7 @@ userSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
+// checks if JWT token has a valid timestamp
 userSchema.methods.changePasswordAfter = function (JWTtimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
@@ -89,6 +94,7 @@ userSchema.methods.changePasswordAfter = function (JWTtimestamp) {
   return false;
 };
 
+// generates 6 digit reset code
 userSchema.methods.createPasswordResetOTP = function () {
   const resetOTP = Math.floor(100000 + Math.random() * 900000);
   this.passwordResetOTP = crypto

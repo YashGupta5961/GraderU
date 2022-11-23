@@ -6,11 +6,13 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const sendMail = require("../utils/mailer");
 
+// signs JWT token
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES,
   });
 
+// sends signed JWT token
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
   const cookieOptions = {
@@ -95,6 +97,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// restricts chained routes to specified roles
 exports.restrictTo =
   (...roles) =>
   (req, res, next) => {
@@ -116,6 +119,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   try {
+    // sends email with password reset code
     await sendMail({
       receiverID: user.email,
       message: `Your password reset code is ${resetOTP}. This is valid for the next 10 minutes.\n`,
@@ -126,8 +130,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       message: "Password reset code has been sent to your registered email!",
     });
   } catch (err) {
-    user.passwordResetOTP = undefined;
-    user.passwordResetExpires = undefined;
+    user.passwordResetOTP = undefined; // clears reset code
+    user.passwordResetExpires = undefined; // clears reset code expiration
     await user.save({ validateBeforeSave: false });
 
     return next(
@@ -142,11 +146,13 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("The email or OTP is missing!", 400));
   }
 
+  // hashes requested reset code to check against DB
   const hashedOTP = crypto
     .createHash("sha256")
     .update(OTP.toString())
     .digest("hex");
 
+  // checks hashed reset code against user in DB
   const user = await User.findOne({
     email,
     passwordResetOTP: hashedOTP,
@@ -157,6 +163,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("Email or OTP is invalid or expired", 400));
   }
 
+  // sets passwords and clears reset values
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetOTP = undefined;
@@ -168,8 +175,10 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
   const { currentPassword, newPassword, newPasswordConfirm } = req.body;
+  // selects password field to check if current password is valid
   const user = await User.findById(req.user.id).select("+password");
 
+  // ensure password fields are present
   if (!currentPassword || !newPassword || !newPasswordConfirm) {
     return next(
       new AppError(
@@ -183,6 +192,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     return next(new AppError("Current password is incorrect", 401));
   }
 
+  // sets new password values
   user.password = newPassword;
   user.passwordConfirm = newPasswordConfirm;
 

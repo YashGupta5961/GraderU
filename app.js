@@ -1,4 +1,3 @@
-const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
@@ -25,7 +24,7 @@ app.options("*", cors());
 app.use(helmet()); // Set security HTTP headers
 
 if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+  app.use(morgan("dev")); // middleware for logging
 }
 
 const limiter = rateLimit({
@@ -52,13 +51,15 @@ app.use(extractJWTCookieToHeader()); // extract jwt cookie and set authorization
 app.use(compression());
 
 // routes
-app.use("/api/v1/tasks", taskRouter);
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/tasks", taskRouter); // connects task routes
+app.use("/api/v1/users", userRouter); // connects user/auth routes
 
+// handles unknown routes
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
 });
 
+// connects error handler
 app.use(globalErrorHandler);
 
 module.exports = app;

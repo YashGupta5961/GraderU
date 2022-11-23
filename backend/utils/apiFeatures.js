@@ -6,35 +6,46 @@ class APIFeatures {
 
   filter() {
     // eslint-disable-next-line node/no-unsupported-features/es-syntax
-    const queryObj = { ...this.queryStr };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const queryObj = { ...this.queryStr }; // destructer query from query string
+
+    // ignore other query parameters
+    const excludedFields = ["page", "sort", "limit", "fields"];
     excludedFields.forEach((el) => delete queryObj[el]);
 
+    // repackage query object
     let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
+    // modify mongo query operators
+    queryStr = queryStr.replace(
+      /\b(gte|gt|lte|lt|ne)\b/g,
+      (match) => `$${match}`
+    );
+
+    // chain query
     this.query = this.query.find(JSON.parse(queryStr));
     return this;
   }
 
   sort() {
     if (this.queryStr.sort) {
-      const sortBy = this.queryStr.sort.split(',').join(' ');
+      const sortBy = this.queryStr.sort.split(",").join(" ");
       this.query = this.query.sort(sortBy);
     }
     return this;
   }
 
+  // filter response fields
   limitFields() {
     if (this.queryStr.fields) {
-      const fields = this.queryStr.fields.split(',').join(' ');
+      const fields = this.queryStr.fields.split(",").join(" ");
       this.query = this.query.select(fields);
     } else {
-      this.query = this.query.select('-__v');
+      this.query = this.query.select("-__v");
     }
     return this;
   }
 
+  // pagination
   paginate() {
     const page = this.queryStr.page * 1 || 1;
     const limit = this.queryStr.limit * 1 || 100;
