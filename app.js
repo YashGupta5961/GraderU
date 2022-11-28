@@ -15,6 +15,7 @@ const globalErrorHandler = require("./backend/controllers/errorController");
 
 const taskRouter = require("./backend/routes/taskRoutes");
 const userRouter = require("./backend/routes/userRoutes");
+const courseRouter = require("./backend/routes/courseRoutes");
 
 const app = express();
 
@@ -53,6 +54,7 @@ app.use(compression());
 // routes
 app.use("/api/v1/tasks", taskRouter); // connects task routes
 app.use("/api/v1/users", userRouter); // connects user/auth routes
+app.use("/api/v1/courses", courseRouter); // connects course routes
 
 // handles unknown routes
 app.all("*", (req, res, next) => {
