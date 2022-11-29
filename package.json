@@ -19,6 +19,11 @@
     "nodemon": "^2.0.20"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.10.16",
+    "@mui/material": "^5.10.16",
+    "@mui/styled-engine-sc": "^5.10.16",
     "@sendgrid/mail": "^7.7.0",
     "axios": "^1.1.3",
     "bcryptjs": "^2.4.3",
@@ -32,8 +37,10 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.2",
     "morgan": "^1.10.0",
+    "prop-types": "^15.8.1",
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1",
+    "styled-components": "^5.3.6",
     "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
   }
