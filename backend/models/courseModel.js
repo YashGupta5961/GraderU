@@ -81,6 +81,25 @@ const courseSchema = new mongoose.Schema({
   ],
 });
 
+// courseSchema.pre(/^findOne/, function (next) {
+//   this.populate({
+//     path: "sections",
+//     populate: {
+//       path: "professor",
+//       select: "name",
+//       transform: (doc) => doc.name,
+//     },
+//   });
+//   next();
+// });
+
+courseSchema.pre(/^find/, function (next) {
+  this.select({
+    "sections._id": 0,
+  });
+  next();
+});
+
 const Course = mongoose.model("Course", courseSchema);
 
 module.exports = Course;

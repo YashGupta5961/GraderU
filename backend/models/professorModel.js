@@ -13,6 +13,14 @@ const professorSchema = new mongoose.Schema({
   ],
 });
 
+professorSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "courses",
+    select: "_id name subject number term year",
+  });
+  next();
+});
+
 const Professor = mongoose.model("Professor", professorSchema);
 
 module.exports = Professor;
