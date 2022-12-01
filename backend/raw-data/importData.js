@@ -66,6 +66,29 @@ const importProfessors = async () => {
   process.exit();
 };
 
+const linkProfessors = async () => {
+  try {
+    console.log("Fetching Professors!");
+    const professors = await Professor.find();
+    console.log("Professors fetched! Generating promises!");
+
+    const linkPromises = professors.map((professor) =>
+      Course.updateMany(
+        { "sections.profName": professor.name },
+        { $set: { "sections.$.professor": professor._id } },
+        (arrayFilters = { "sections.profName": professor.name })
+      )
+    );
+    console.log("Promises generated! Executing Promises!");
+
+    await Promise.all(linkPromises);
+    console.log("Professors Linked!");
+  } catch (err) {
+    console.log(err);
+  }
+  process.exit();
+};
+
 const deleteData = async (model) => {
   try {
     await model.deleteMany();
@@ -81,6 +104,7 @@ if (process.argv[2] === "--import") {
     importCourses();
   } else if (process.argv[3] === "professors") {
     importProfessors();
+    linkProfessors();
   } else {
     console.log("Invalid argument!");
   }
