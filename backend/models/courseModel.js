@@ -47,6 +47,12 @@ const courseSchema = new mongoose.Schema({
         "A course key must be in the format <Subject Code><Course number>-<FA/SP/WI/SU><Year>. Ex. ECE391-FA2021.",
     },
   },
+  faqs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
   sections: [
     {
       professor: {
