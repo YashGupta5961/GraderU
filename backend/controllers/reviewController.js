@@ -20,27 +20,27 @@ exports.createReview = catchAsync(async (req, res, next) => {
 exports.updateReview = catchAsync(async (req, res, next) => {
   const { like } = req.body;
 
-  //   if (!like) {
-  //     return next(new AppError("Request must contain like field.", 404));
-  //   }
-
   if (![-1, 0, 1].includes(like)) {
     return next(new AppError("Like field must be -1, 0, or 1.", 404));
   }
 
-  let review;
   if (like === -1) {
-    review = await Review.findByIdAndUpdate(req.params.id, {
+    await Review.findByIdAndUpdate(req.params.id, {
       $push: { dislikes: req.user._id },
     });
   } else if (like === 0) {
-    review = await Review.findByIdAndUpdate(req.params.id, {
+    await Review.findByIdAndUpdate(req.params.id, {
       $pull: { likes: req.user._id, dislikes: req.user._id },
     });
   } else {
-    review = await Review.findByIdAndUpdate(req.params.id, {
+    await Review.findByIdAndUpdate(req.params.id, {
       $push: { likes: req.user._id },
     });
+  }
+
+  const review = await Review.findById(req.params.id);
+  if (!review) {
+    return next(new AppError("No document found with that ID", 404));
   }
 
   res.status(200).json({

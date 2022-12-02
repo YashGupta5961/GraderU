@@ -93,17 +93,12 @@ const courseSchema = new mongoose.Schema({
   ],
 });
 
-// courseSchema.pre(/^findOne/, function (next) {
-//   this.populate({
-//     path: "sections",
-//     populate: {
-//       path: "professor",
-//       select: "name",
-//       transform: (doc) => doc.name,
-//     },
-//   });
-//   next();
-// });
+courseSchema.pre("findOne", function (next) {
+  this.populate({
+    path: "reviews",
+  });
+  next();
+});
 
 courseSchema.pre(/^find/, function (next) {
   this.select({
