@@ -8,7 +8,8 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
-dotenv.config({ path: "./config.env" }); // consume enviornment variables
+// consume enviornment variables
+dotenv.config({ path: "./config.env" });
 const app = require("./app");
 
 // mongo connection string

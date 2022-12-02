@@ -47,8 +47,24 @@ const courseSchema = new mongoose.Schema({
         "A course key must be in the format <Subject Code><Course number>-<FA/SP/WI/SU><Year>. Ex. ECE391-FA2021.",
     },
   },
-  professors: [
+  faqs: [
     {
+      question: String,
+      answer: String,
+    },
+  ],
+  reviews: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Review",
+    },
+  ],
+  sections: [
+    {
+      professor: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Professor",
+      },
       profName: {
         type: String,
         required: true,
@@ -75,6 +91,20 @@ const courseSchema = new mongoose.Schema({
       },
     },
   ],
+});
+
+courseSchema.pre("findOne", function (next) {
+  this.populate({
+    path: "reviews",
+  });
+  next();
+});
+
+courseSchema.pre(/^find/, function (next) {
+  this.select({
+    "sections._id": 0,
+  });
+  next();
 });
 
 const Course = mongoose.model("Course", courseSchema);
