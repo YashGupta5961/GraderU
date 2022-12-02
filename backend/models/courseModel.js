@@ -53,6 +53,12 @@ const courseSchema = new mongoose.Schema({
       answer: String,
     },
   ],
+  reviews: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Review",
+    },
+  ],
   sections: [
     {
       professor: {
