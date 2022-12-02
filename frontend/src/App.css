@@ -1,0 +1,23 @@
+:root {
+    --clr-purple: #b4a7d6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.app-container {
+    text-align: center;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    width: 100%;
+}
+
+.app-header {
+    
+    background-color: var(--clr-purple);
+    padding: 10px;
+    height: 100px;
+}
