@@ -58,7 +58,21 @@ const App = (props) => {
         // </div>
         <div className="app-container">
             <div className="app-header">
-                <h1>GraderU</h1>
+                <div className="header-row-1">
+                    <div className="app-header-title">
+                        <img className="logo" src='https://cryptologos.cc/logos/cosmos-atom-logo.png' alt="logo" />
+                        <p>GraderU</p>
+                    </div>
+
+                    <button className="app-header-profile-btn" >
+                        <img className="profile-img" src="https://www.nicepng.com/png/full/202-2024580_png-file-profile-icon-vector-png.png" alt="profile-button" />
+                    </button>
+                </div>
+
+                <div className="app-header-btns">
+                    <button className="home-btn">Home</button>
+                    <button className="calculator-btn">Grade Calculator</button>
+                </div>
             </div>
             {/* <HomeScreen /> */}
         </div>
