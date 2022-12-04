@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import api from "./api";
+import api from "./utils/api";
 
 const App = (props) => {
   const [inputVal, setInputVal] = useState("");
@@ -8,7 +8,7 @@ const App = (props) => {
   const getTodos = function () {
     api
       .get("/tasks")
-      .then((res) => setTasks(res.data.data.data))
+      .then((res) => setTasks(res.data.data))
       .catch((err) => console.log(err));
   };
 
@@ -16,7 +16,7 @@ const App = (props) => {
     api
       .post("/tasks", { action: inputVal })
       .then((res) => {
-        setTasks([...tasks, res.data.data.data]);
+        setTasks([...tasks, res.data.data]);
         setInputVal("");
       })
       .catch((err) => console.log(err));
