@@ -49,7 +49,7 @@ app.use(xss()); // Data sanitization against XSS
 
 // Serving static files
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static("/cat-cards/", "frontend/public"));
+  app.use(express.static("/frontend/public"));
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname + "/frontend/build/index.html"));
   });
