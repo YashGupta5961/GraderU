@@ -1,8 +1,10 @@
 import { React } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material";
+import { createTheme, ThemeProvider, Typography } from "@mui/material";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import ForgotPassword from "./components/auth/ForgotPassword";
+import ResetPassword from "./components/auth/ResetPassword";
 
 const theme = createTheme({
   palette: {
@@ -34,9 +36,18 @@ const App = (props) => {
     <ThemeProvider theme={theme}>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <Typography component="h1" variant="h4">
+                Home
+              </Typography>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </HashRouter>
     </ThemeProvider>

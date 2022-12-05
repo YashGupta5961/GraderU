@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -11,23 +10,23 @@ import Container from "@mui/material/Container";
 import api from "../../utils/api";
 import { redirectTimeout } from "../../utils/constants";
 
-// ToDo: redirect to home page on succesfull login
-
-const Login = () => {
+const ResetPassword = () => {
   const [errState, setErrState] = useState("");
   const [successState, setSuccessState] = useState("");
   const navigate = useNavigate();
 
-  const onLogin = async (event) => {
+  const onResetPassword = async (event) => {
     event.preventDefault();
     const data = new FormData(event.target);
     try {
-      await api.post("/users/login", {
+      await api.patch("/users/resetPassword", {
         email: data.get("email"),
+        OTP: data.get("resetCode"),
         password: data.get("password"),
+        passwordConfirm: data.get("passwordConfirm"),
       });
       setErrState("");
-      setSuccessState("Logged in succesfully! Redirecting you home.");
+      setSuccessState("Password successfully reset! Redirecting you home.");
       setTimeout(() => {
         navigate("/");
       }, redirectTimeout);
@@ -38,7 +37,7 @@ const Login = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="sm">
       <CssBaseline />
       <Box
         sx={{
@@ -52,11 +51,16 @@ const Login = () => {
           borderRadius: 2,
         }}
       >
-        <Typography component="h1" variant="h4">
-          Login
+        <Typography component="h1" variant="h4" noWrap={true}>
+          Reset Password
         </Typography>
-        <div>Sign in to your account</div>
-        <Box component="form" onSubmit={onLogin} noValidate sx={{ mt: 1 }}>
+        <div>Reset your password</div>
+        <Box
+          component="form"
+          onSubmit={onResetPassword}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             error={errState}
             margin="normal"
@@ -66,6 +70,26 @@ const Login = () => {
             label="Email Address"
             name="email"
             autoComplete="email"
+            autoFocus
+            sx={{
+              "& label.Mui-focused": {
+                color: "primary.contrastText",
+              },
+              "& .MuiOutlinedInput-root": {
+                "&.Mui-focused fieldset": {
+                  borderColor: "primary.contrastText",
+                },
+              },
+            }}
+          />
+          <TextField
+            error={errState}
+            margin="normal"
+            required
+            fullWidth
+            id="resetCode"
+            label="Reset Code"
+            name="resetCode"
             autoFocus
             sx={{
               "& label.Mui-focused": {
@@ -99,40 +123,44 @@ const Login = () => {
               },
             }}
           />
-          <Button
-            type="submit"
+          <TextField
+            error={errState}
+            margin="normal"
+            required
             fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Login
-          </Button>
-          {errState ? <Alert severity="error">{errState}</Alert> : null}
+            name="passwordConfirm"
+            label="Password Confirm"
+            type="password"
+            id="passwordConfirm"
+            autoComplete="current-passwordConfirm"
+            sx={{
+              "& label.Mui-focused": {
+                color: "primary.contrastText",
+              },
+              "& .MuiOutlinedInput-root": {
+                "&.Mui-focused fieldset": {
+                  borderColor: "primary.contrastText",
+                },
+              },
+            }}
+          />
           {successState ? (
             <Alert severity="success">{successState}</Alert>
-          ) : null}
-          <div align="center">
-            <Link
-              href="#/forgot-password"
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
               variant="contained"
-              sx={{ color: "primary.contrastText" }}
+              sx={{ mt: 3, mb: 2 }}
             >
-              Forgot password?
-            </Link>
-          </div>
-          <div align="center">
-            <Link
-              href="#/register"
-              variant="contained"
-              sx={{ color: "primary.contrastText" }}
-            >
-              Create an Account
-            </Link>
-          </div>
+              Reset
+            </Button>
+          )}
+          {errState ? <Alert severity="error">{errState}</Alert> : null}
         </Box>
       </Box>
     </Container>
   );
 };
 
-export default Login;
+export default ResetPassword;
