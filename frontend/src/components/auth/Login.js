@@ -108,7 +108,7 @@ const Login = () => {
           </div>
           <div align="center">
             <Link
-              href="#"
+              href="#/register"
               variant="contained"
               sx={{ color: "primary.contrastText" }}
             >
