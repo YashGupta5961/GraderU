@@ -47,14 +47,6 @@ app.use(express.json({ limit: "10kb" })); // Body parser
 app.use(mongoSanitize()); // Data sanitization against NoSQL query injection
 app.use(xss()); // Data sanitization against XSS
 
-// Serving static files
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.resolve(__dirname, "frontend", "build")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-  });
-}
-
 app.use(hpp()); // Prevent parameter pollution
 app.use(extractJWTCookieToHeader()); // extract jwt cookie and set authorization header
 app.use(compression());
@@ -65,6 +57,14 @@ app.use("/api/v1/users", userRouter); // connects user/auth routes
 app.use("/api/v1/courses", courseRouter); // connects course routes
 app.use("/api/v1/professors", professorRouter); // connects professor routes
 app.use("/api/v1/reviews", reviewRouter); // connects professor routes
+
+// Serving static files
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.resolve(__dirname, "frontend", "build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+  });
+}
 
 // handles unknown routes
 app.all("*", (req, res, next) => {
