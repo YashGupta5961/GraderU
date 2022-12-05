@@ -1,5 +1,0 @@
-heroku_deploy:
-  stage: production
-  script:
-    - gem install dpl
-    - dpl --provider=heroku --app=graderu --api-key=c1857403-d3e9-432c-8581-34e7c389d9f3
