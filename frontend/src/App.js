@@ -1,5 +1,5 @@
 import { React } from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 
