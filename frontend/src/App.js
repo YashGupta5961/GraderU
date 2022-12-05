@@ -1,4 +1,5 @@
 import { React } from "react";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
@@ -31,8 +32,13 @@ const theme = createTheme({
 const App = (props) => {
   return (
     <ThemeProvider theme={theme}>
-      <Login />
-      {/* <Signup /> */}
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Signup />} />
+        </Routes>
+      </HashRouter>
     </ThemeProvider>
   );
 };
