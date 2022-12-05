@@ -1,58 +1,39 @@
-import { React, useState, useEffect } from "react";
-import api from "./utils/api";
+import { React } from "react";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
+
+const theme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      background: "#404258",
+      light: "#9575cd",
+      main: "#5e35b1",
+      dark: "#311b92",
+      contrastText: "#fff",
+    },
+    secondary: {
+      light: "#ff7961",
+      main: "#f44336",
+      dark: "#ba000d",
+      contrastText: "#000",
+    },
+  },
+  typography: {
+    fontFamily: "Courier Prime",
+    button: {
+      textTransform: "none",
+    },
+  },
+});
 
 const App = (props) => {
-  const [inputVal, setInputVal] = useState("");
-  const [tasks, setTasks] = useState([]);
-
-  const getTodos = function () {
-    api
-      .get("/tasks")
-      .then((res) => setTasks(res.data.data))
-      .catch((err) => console.log(err));
-  };
-
-  const addTodo = function () {
-    api
-      .post("/tasks", { action: inputVal })
-      .then((res) => {
-        setTasks([...tasks, res.data.data]);
-        setInputVal("");
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const deleteTodo = function (todoId) {
-    api
-      .delete(`/tasks/${todoId}`)
-      .then((res) => {
-        const filteredTodos = tasks.filter((task) => task._id !== todoId);
-        setTasks(filteredTodos);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  useEffect(() => {
-    getTodos();
-  }, []);
-
-  const todoList = tasks.map((task) => (
-    <li key={task._id}>
-      <span>{task.action}</span>
-      <button onClick={() => deleteTodo(task._id)}>Delete</button>
-    </li>
-  ));
-
   return (
-    <div>
-      <h1>ToDo</h1>
-      <input
-        value={inputVal}
-        onChange={(e) => setInputVal(e.target.value)}
-      ></input>
-      <button onClick={() => addTodo()}>Add ToDo</button>
-      <ul>{todoList}</ul>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Login />
+      {/* <Signup /> */}
+    </ThemeProvider>
   );
 };
 
