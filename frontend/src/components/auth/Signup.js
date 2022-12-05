@@ -1,4 +1,5 @@
 import { React, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -7,9 +8,12 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import api from "../../utils/api";
+import { redirectTimeout } from "../../utils/constants";
 
 const Signup = () => {
   const [errState, setErrState] = useState("");
+  const [successState, setSuccessState] = useState("");
+  const navigate = useNavigate();
 
   const onSignup = async (event) => {
     event.preventDefault();
@@ -22,8 +26,13 @@ const Signup = () => {
         passwordConfirm: data.get("passwordConfirm"),
       });
       setErrState("");
+      setSuccessState("Account succesfully created! Redirecting you home.");
+      setTimeout(() => {
+        navigate("/");
+      }, redirectTimeout);
     } catch (err) {
       setErrState(err.response.data.message);
+      setSuccessState("");
     }
   };
 
@@ -131,14 +140,18 @@ const Signup = () => {
               },
             }}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Register
-          </Button>
+          {successState ? (
+            <Alert severity="success">{successState}</Alert>
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Register
+            </Button>
+          )}
           {errState ? <Alert severity="error">{errState}</Alert> : null}
         </Box>
       </Box>

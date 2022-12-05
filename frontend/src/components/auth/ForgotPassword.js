@@ -1,36 +1,28 @@
 import { React, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
+import { useNavigate } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import api from "../../utils/api";
-import { redirectTimeout } from "../../utils/constants";
 
-// ToDo: redirect to home page on succesfull login
-
-const Login = () => {
+const ForgotPassword = () => {
   const [errState, setErrState] = useState("");
   const [successState, setSuccessState] = useState("");
   const navigate = useNavigate();
 
-  const onLogin = async (event) => {
+  const onForgotPassword = async (event) => {
     event.preventDefault();
     const data = new FormData(event.target);
     try {
-      await api.post("/users/login", {
+      await api.post("/users/forgotPassword", {
         email: data.get("email"),
-        password: data.get("password"),
       });
       setErrState("");
-      setSuccessState("Logged in succesfully! Redirecting you home.");
-      setTimeout(() => {
-        navigate("/");
-      }, redirectTimeout);
+      setSuccessState("Reset code sent!");
     } catch (err) {
       setErrState(err.response.data.message);
       setSuccessState("");
@@ -38,7 +30,7 @@ const Login = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="sm">
       <CssBaseline />
       <Box
         sx={{
@@ -52,11 +44,16 @@ const Login = () => {
           borderRadius: 2,
         }}
       >
-        <Typography component="h1" variant="h4">
-          Login
+        <Typography component="h1" variant="h4" noWrap={true}>
+          Forgot Password
         </Typography>
-        <div>Sign in to your account</div>
-        <Box component="form" onSubmit={onLogin} noValidate sx={{ mt: 1 }}>
+        <div>Reset your password</div>
+        <Box
+          component="form"
+          onSubmit={onForgotPassword}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             error={errState}
             margin="normal"
@@ -78,61 +75,32 @@ const Login = () => {
               },
             }}
           />
-          <TextField
-            error={errState}
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            sx={{
-              "& label.Mui-focused": {
-                color: "primary.contrastText",
-              },
-              "& .MuiOutlinedInput-root": {
-                "&.Mui-focused fieldset": {
-                  borderColor: "primary.contrastText",
-                },
-              },
-            }}
-          />
+          {successState ? (
+            <Alert severity="success">{successState}</Alert>
+          ) : null}
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Login
+            {successState ? "Resend reset code" : "Send reset code"}
           </Button>
           {errState ? <Alert severity="error">{errState}</Alert> : null}
           {successState ? (
-            <Alert severity="success">{successState}</Alert>
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mb: 2 }}
+              onClick={() => navigate("/reset-password")}
+            >
+              Continue
+            </Button>
           ) : null}
-          <div align="center">
-            <Link
-              href="#/forgot-password"
-              variant="contained"
-              sx={{ color: "primary.contrastText" }}
-            >
-              Forgot password?
-            </Link>
-          </div>
-          <div align="center">
-            <Link
-              href="#/register"
-              variant="contained"
-              sx={{ color: "primary.contrastText" }}
-            >
-              Create an Account
-            </Link>
-          </div>
         </Box>
       </Box>
     </Container>
   );
 };
 
-export default Login;
+export default ForgotPassword;
