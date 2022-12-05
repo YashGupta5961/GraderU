@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "UIUC CS409 Final Project",
   "main": "server.js",
+  "homepage": "/",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-watch": "nodemon server.js",
