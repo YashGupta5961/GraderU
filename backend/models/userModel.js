@@ -42,9 +42,16 @@ const userSchema = new mongoose.Schema({
       message: "Passwords must match",
     },
   },
+  verified: {
+    type: Boolean,
+    default: false,
+    required: [true, "A user must have a verified status"],
+  },
   passwordChangedAt: Date,
   passwordResetOTP: String,
   passwordResetExpires: Date,
+  verifyOTP: String,
+  verifyExpires: Date,
 });
 
 // Query middleware
@@ -104,6 +111,18 @@ userSchema.methods.createPasswordResetOTP = function () {
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10mins from now
   return resetOTP;
+};
+
+// generates 6 digit verification code
+userSchema.methods.createVerifyOTP = function () {
+  const verifyOTP = Math.floor(100000 + Math.random() * 900000);
+  this.verifyOTP = crypto
+    .createHash("sha256")
+    .update(verifyOTP.toString())
+    .digest("hex");
+
+  this.verifyExpires = Date.now() + 10 * 60 * 1000; // 10mins from now
+  return verifyOTP;
 };
 
 const User = mongoose.model("User", userSchema);
