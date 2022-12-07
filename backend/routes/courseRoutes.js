@@ -9,7 +9,7 @@ router
   .get(courseController.getAllCourses)
   .post(
     authController.protect,
-    authController.restrictTo("Admin"),
+    authController.restrictTo("Verified", "Admin"),
     courseController.createCourse
   );
 router
@@ -17,12 +17,12 @@ router
   .get(courseController.getCourse)
   .patch(
     authController.protect,
-    authController.restrictTo("Admin"),
+    authController.restrictTo("Verified", "Admin"),
     courseController.updateCourse
   )
   .delete(
     authController.protect,
-    authController.restrictTo("Admin"),
+    authController.restrictTo("Verified", "Admin"),
     courseController.deleteCourse
   );
 

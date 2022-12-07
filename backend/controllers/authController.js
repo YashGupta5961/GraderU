@@ -105,7 +105,7 @@ exports.restrictTo =
         new AppError("You do not have permissions to perform this action!", 403)
       );
     }
-    if (verified && !req.user.verified) {
+    if (roles.includes("Verified") && !req.user.verified) {
       return next(
         new AppError("You must be verified to perform this action!", 403)
       );

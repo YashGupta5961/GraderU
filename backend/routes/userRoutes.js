@@ -19,7 +19,7 @@ router.patch("/updateMyPassword", authController.updatePassword);
 router.get("/me", userController.getMe, userController.getUser);
 
 // all routes beyond this require admin priviledges
-router.use(authController.restrictTo("Admin"));
+router.use(authController.restrictTo("Verified", "Admin"));
 
 router
   .route("/")

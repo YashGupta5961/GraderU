@@ -9,7 +9,7 @@ router
   .get(professorController.getAllProfessors)
   .post(
     authController.protect,
-    authController.restrictTo("Admin"),
+    authController.restrictTo("Verified", "Admin"),
     professorController.createProfessor
   );
 router
@@ -17,12 +17,12 @@ router
   .get(professorController.getProfessor)
   .patch(
     authController.protect,
-    authController.restrictTo("Admin"),
+    authController.restrictTo("Verified", "Admin"),
     professorController.updateProfessor
   )
   .delete(
     authController.protect,
-    authController.restrictTo("Admin"),
+    authController.restrictTo("Verified", "Admin"),
     professorController.deleteProfessor
   );
 
