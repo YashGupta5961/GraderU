@@ -98,11 +98,16 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 // restricts chained routes to specified roles
 exports.restrictTo =
-  (...roles) =>
+  (verified = false, ...roles) =>
   (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError("You do not have permissions to perform this action!", 403)
+      );
+    }
+    if (verified && !req.user.verified) {
+      return next(
+        new AppError("You must be verified to perform this action!", 403)
       );
     }
     next();

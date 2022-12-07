@@ -26,9 +26,11 @@ const Signup = () => {
         passwordConfirm: data.get("passwordConfirm"),
       });
       setErrState("");
-      setSuccessState("Account succesfully created! Redirecting you home.");
+      setSuccessState(
+        "Account succesfully created! To interact with the community you will need to verify your account. Redirecting you to the verification page."
+      );
       setTimeout(() => {
-        navigate("/");
+        navigate("/verify");
       }, redirectTimeout);
     } catch (err) {
       setErrState(err.response.data.message);
