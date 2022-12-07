@@ -12,6 +12,8 @@ router.patch("/resetPassword", authController.resetPassword); // route for reset
 // all routes beyond this require user to be login
 router.use(authController.protect);
 
+router.post("/requestVerification", authController.requestVerification); // route for requesting verification
+router.patch("/verify", authController.verify); // route for verifying
 router.patch("/updateMe", userController.updateMe);
 router.patch("/updateMyPassword", authController.updatePassword);
 router.get("/me", userController.getMe, userController.getUser);

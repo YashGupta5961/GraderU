@@ -35,7 +35,6 @@ exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
-    role: "Student",
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   });
@@ -99,15 +98,80 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 // restricts chained routes to specified roles
 exports.restrictTo =
-  (...roles) =>
+  (verified = false, ...roles) =>
   (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError("You do not have permissions to perform this action!", 403)
       );
     }
+    if (verified && !req.user.verified) {
+      return next(
+        new AppError("You must be verified to perform this action!", 403)
+      );
+    }
     next();
   };
+
+exports.requestVerification = catchAsync(async (req, res, next) => {
+  const { user } = req;
+
+  const verifyOTP = user.createVerifyOTP();
+  await user.save({ validateBeforeSave: false });
+
+  try {
+    // sends email with verification code
+    await sendMail({
+      receiverID: user.email,
+      message: `Your verification code is ${verifyOTP}. This is valid for the next 10 minutes.\n`,
+    });
+
+    res.status(200).json({
+      status: "Success",
+      message: "Verification code has been sent to your registered email!",
+    });
+  } catch (err) {
+    user.verifyOTP = undefined; // clears verify code
+    user.verifyExpires = undefined; // clears verify code expiration
+    await user.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError("There was an error sending a verification code!", 500)
+    );
+  }
+});
+
+exports.verify = catchAsync(async (req, res, next) => {
+  const { email, OTP } = req.body;
+  if (!email || !OTP) {
+    return next(new AppError("The email or OTP is missing!", 400));
+  }
+
+  // hashes requested verification code to check against DB
+  const hashedOTP = crypto
+    .createHash("sha256")
+    .update(OTP.toString())
+    .digest("hex");
+
+  // checks hashed verification code against user in DB
+  const user = await User.findOne({
+    email,
+    verifyOTP: hashedOTP,
+    verifyExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(new AppError("Email or OTP is invalid or expired", 400));
+  }
+
+  // marks user as verified and clears verification request values
+  user.verified = true;
+  user.verifyOTP = undefined;
+  user.verifyExpires = undefined;
+
+  await user.save({ validateBeforeSave: false });
+  createSendToken(user, 200, res);
+});
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
