@@ -14,7 +14,6 @@ const {
 } = require("./backend/utils/customMiddleware");
 const globalErrorHandler = require("./backend/controllers/errorController");
 
-const taskRouter = require("./backend/routes/taskRoutes");
 const userRouter = require("./backend/routes/userRoutes");
 const courseRouter = require("./backend/routes/courseRoutes");
 const professorRouter = require("./backend/routes/professorRoutes");
@@ -52,7 +51,6 @@ app.use(extractJWTCookieToHeader()); // extract jwt cookie and set authorization
 app.use(compression());
 
 // routes
-app.use("/api/v1/tasks", taskRouter); // connects task routes
 app.use("/api/v1/users", userRouter); // connects user/auth routes
 app.use("/api/v1/courses", courseRouter); // connects course routes
 app.use("/api/v1/professors", professorRouter); // connects professor routes
