@@ -74,7 +74,8 @@ const App = (props) => {
                     <button className="calculator-btn">Grade Calculator</button>
                 </div>
             </div>
-            {/* <HomeScreen /> */}
+
+            <HomeScreen />
         </div>
     );
 };
