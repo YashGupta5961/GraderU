@@ -25,7 +25,7 @@ function transformProfessorData(data) {
     let output = {};
     output["profId"] = data["_id"];
     output["profName"] = data["name"];
-    
+
     let courseData = [];
     for (let i = 0; i < data.courses.length; i++) {
         let course = data.courses[i];
@@ -55,12 +55,12 @@ export default function ProfPage(props) {
 
     // Data fetching using our API through axios and loading into state variables to be used throughout the page
     useEffect(() => {
-        const fetch_prof_data = async function() {
+        const fetch_prof_data = async function () {
             // Get Prof data 
             const profUrl = `https://graderu.herokuapp.com/api/v1/professors?name=${profNameParam}`;
-            const {data: {
+            const { data: {
                 data: results
-            }} = await axios.get(profUrl);
+            } } = await axios.get(profUrl);
             updateProfData(transformProfessorData(results[0]));
 
             const reviewUrl = `https://graderu.herokuapp.com/api/v1/reviews?professor=${results[0]["_id"]}`
@@ -94,12 +94,12 @@ export default function ProfPage(props) {
         const [avgGPA, updateGPA] = useState(0.0)
 
         useEffect(() => {
-            const fetch_course_data = async function() {
+            const fetch_course_data = async function () {
                 //API calls 
                 const url = `https://graderu.herokuapp.com/api/v1/courses?subject=${props.data.subject}&year=${props.data.year}&term=${props.data.term}&number=${props.data.number}`
-                const {data: {
+                const { data: {
                     data: results
-                }} = await axios.get(url);
+                } } = await axios.get(url);
 
                 updateGPA(avgGpaProf(results, profNameParam))
             }

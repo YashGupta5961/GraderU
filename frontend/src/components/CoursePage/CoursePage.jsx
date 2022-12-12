@@ -6,6 +6,7 @@ import GraphComponent from "../Graph/graph.jsx"
 import "./styles/styles.scss";
 import CourseRatingsComponent from "../ratings/courseRatingsComponent.jsx";
 import { useSearchParams } from "react-router-dom";
+import Header from "../header/header.jsx";
 
 function transformCourseData(data) {
     let mainData = new Map();
@@ -13,9 +14,9 @@ function transformCourseData(data) {
     let faqData = [];
 
     for (let courseIdx = 0; courseIdx < data.length; courseIdx++) {
-      let course = data[courseIdx];
-      reviewData = reviewData.concat(course["reviews"]);
-      faqData = faqData.concat(course["faqs"]);
+        let course = data[courseIdx];
+        reviewData = reviewData.concat(course["reviews"]);
+        faqData = faqData.concat(course["faqs"]);
 
       for (let sectionIdx = 0; sectionIdx < course["sections"].length; sectionIdx++) {
         let section = course["sections"][sectionIdx];
@@ -48,7 +49,6 @@ function transformCourseData(data) {
             ]
           });
         }
-      }
     }
     return [Array.from(mainData.values()), reviewData, faqData];
 }
@@ -68,11 +68,11 @@ export default function CoursePage(props) {
     const subjectParam = searchParams.get('subject');
 
     useEffect(() => {
-        const fetch_data = async function() {
+        const fetch_data = async function () {
             const url = `https://graderu.herokuapp.com/api/v1/courses?subject=${subjectParam}&number=${numberParam}`
-            const {data: {
+            const { data: {
                 data: results
-            }} = await axios.get(url);
+            } } = await axios.get(url);
 
             let [mainData, newReviewData, newfaqData] = transformCourseData(results);
 
@@ -96,7 +96,7 @@ export default function CoursePage(props) {
         }));
         changeProfFilterValue(defaultVal);
     }, [data]);
-    
+
     useEffect(() => {
         if (!isDataInit) return;
         for (let i = 0; i < data.length; i++) {
@@ -108,11 +108,11 @@ export default function CoursePage(props) {
                         {`${val.term} ${val.year}`}
                     </MenuItem>;
                 }));
-                changeYearTermFilterValue(defaultVal);               
+                changeYearTermFilterValue(defaultVal);
             }
         }
     }, [profFilterValue]);
-    
+
     return !isDataInit ? (<></>) : (
         <Container className="CoursePage" sx={{
             marginTop: 5
