@@ -4,7 +4,6 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import FaceIcon from '@mui/icons-material/Face';
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 function stringSearch(array, str) {
     if (array === null || array === undefined) return -1;
@@ -26,7 +25,29 @@ function stringSearch(array, str) {
 }
 export default function ReviewItem(props) {
     const [likeDislikeButton, changeLikeDislikeValue] = useState(null);
-    const likeDislikeRatio = Math.floor(props.data.likes.length / (props.data.likes.length + props.data.dislikes.length) * 100);
+    const totalLength = (props.data["likes"].length + props.data["dislikes"].length) === 0 ? 1 : props.data["likes"].length + props.data["dislikes"].length;
+    const likeDislikeRatio = Math.floor((props.data["likes"].length / totalLength) * 100);
+
+    let profName = '';
+    let courseTerm = '';
+    let courseYear = '';
+
+    for (let i = 0; i < props.profData.length; i++) {
+        let val = props.profData[i];
+        if (val["profId"] === props.data.professor) {
+            for (let j = 0; j < val.courseData.length; j++) {
+                let course = val.courseData[j];
+                if (course["courseId"] === props.data.course) {
+                    profName = val["profName"];
+                    courseTerm = val["term"];
+                    courseYear = val["year"];
+                    break;
+                }
+            }
+            break;
+        } 
+    }
+
     const getUserId = async function () {
         // const {
         //     data: {
@@ -67,7 +88,7 @@ export default function ReviewItem(props) {
                 <Rating value={props.data.rating} readOnly/>
             </div>
             <ListItemText 
-                primary={`Professor: ${props.data.professor} Course: ${props.data.courseName} ${props.data.courseCode}`}
+                primary={`Professor: ${profName} Term: ${courseTerm} ${courseYear}`}
                 secondary={props.data.text}
             />
             <div>
@@ -77,7 +98,7 @@ export default function ReviewItem(props) {
                     let tempValue = (newValue === null) ? 0 : newValue;
 
                     // Send it to the dispatcher. State will be updated using useEffect hook.
-                    props.reviewDataDispatcher({_id: props.data._id, action: 'update', payload: {like: tempValue}});
+                    props.reviewDataDispatcher('update', {like: tempValue}, props.data["_id"]);
                 }}>
                     <ToggleButton value={1}><ThumbUpIcon/></ToggleButton>
                     <ToggleButton value={-1}><ThumbDownIcon/></ToggleButton>
@@ -100,7 +121,14 @@ ReviewItem.propTypes = {
         professor: PropTypes.string.isRequired,
         course: PropTypes.string.isRequired,
     }).isRequired,
-    // Function needs to support updating reviews
-    // Update review (needs _id, update json)
+    profData: PropTypes.arrayOf(PropTypes.shape({
+        profName: PropTypes.string,
+        profId: PropTypes.string,
+        courseData: PropTypes.arrayOf(PropTypes.shape({
+            courseId: PropTypes.string,
+            term: PropTypes.string,
+            year: PropTypes.number
+        }))
+    })),
     reviewDataDispatcher: PropTypes.func.isRequired
 }

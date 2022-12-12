@@ -16,7 +16,7 @@ function handleTextChange(e, changeError, changeTextValue, changeTooltipMessage)
     }
 }
 
-function handleSubmitReview(reviewDispatcher, filterField, filterId, constantField, constantId, ratings, text, closePopup) {
+async function handleSubmitReview(reviewDispatcher, filterField, filterId, constantField, constantId, ratings, text) {
     // Generate output packet
     let packet = {};
     packet[filterField] = filterId;
@@ -25,8 +25,7 @@ function handleSubmitReview(reviewDispatcher, filterField, filterId, constantFie
     packet['text'] = text;
 
     // Send it to the dispatcher
-    reviewDispatcher(packet, 'create');
-    closePopup();
+    await reviewDispatcher('create', packet);
 }
 
 export default function CreateReviewComponent(props) {
@@ -49,8 +48,8 @@ export default function CreateReviewComponent(props) {
         let tempList = []
         props.filterList.forEach((val, idx) => {
             tempList.push(
-                <MenuItem value={val['_id']} key={idx}>
-                    {val.name}
+                <MenuItem value={val['profId']} key={idx}>
+                    {val.profName}
                 </MenuItem>
             );
         });
@@ -60,13 +59,13 @@ export default function CreateReviewComponent(props) {
     // Update year and term dropdown
     useEffect(() => {
         let termYearList = [];
-        
-        for (const val in props.filterList) {
-            if (val['_id'] === filterValue) {
-                val.terms.forEach((data, idx) => {
+        for (let i = 0; i < props.filterList.length; i++) {
+            let val = props.filterList[i];
+            if (val['profId'] === filterValue) {
+                val.courseData.forEach((data, idx) => {
                     termYearList.push(
-                        <MenuItem value={data['_id']} key={idx}>
-                            {`${data.term}-${data.year}`}
+                        <MenuItem value={data['courseId']} key={idx}>
+                            {`${data.term} ${data.year}`}
                         </MenuItem>
                     );
                 });
@@ -85,11 +84,15 @@ export default function CreateReviewComponent(props) {
                 <h1>Write a Review!</h1>
             </div>
             <div className="createReviewToolsDiv">
-                <Rating value={rating} onChange={(_, newValue) => {
-                    if (newValue !== null) {
-                        changeRatingValue(newValue);
-                    }
-                }}/>
+                <div className="ratingsDiv">
+                    <p>Choose Rating</p>
+                    <Rating className="ratingsTool" value={rating} onChange={(_, newValue) => {
+                        if (newValue !== null) {
+                            changeRatingValue(newValue);
+                        }
+                    }}/>
+                </div>
+                
                 <FormControl className="createFilterFormControl">
                     <InputLabel>{`Choose ${props.filterField}`}</InputLabel>
                     <Select
@@ -97,6 +100,7 @@ export default function CreateReviewComponent(props) {
                         value={filterValue}
                         onChange={(e) => {
                             changeFilterValue(e.target.value)
+                            changeTermYearValue('')
                         }}
                         autoWidth
                     >
@@ -118,7 +122,7 @@ export default function CreateReviewComponent(props) {
                 </FormControl>
             </div>
             <div className="createReviewTextBoxDiv">
-                <FormControl variant="standard" error={error}>
+                <FormControl variant="standard" error={error} className="reviewTextBox">
                     <InputLabel>Enter Review</InputLabel>
                     <Input
                         value={textValue}
@@ -130,7 +134,7 @@ export default function CreateReviewComponent(props) {
                 </FormControl>
             </div>
             <div className="createReviewSubmitButtonDiv">
-                <Button disabled={error} onClick={handleSubmitReview(props.reviewDispatcher, props.filterField, termYearValue, props.constantField, filterValue, rating, textValue, props.closePopup)}>
+                <Button className='reviewCloseButton' disabled={error} onClick={async () => {await handleSubmitReview(props.reviewDispatcher, props.filterField, termYearValue, props.constantField, filterValue, rating, textValue, props.closePopup);}}>
                     Submit
                 </Button>
             </div>
@@ -142,14 +146,13 @@ CreateReviewComponent.propTypes = {
     filterField: PropTypes.string.isRequired,
     constantField: PropTypes.string.isRequired,
     filterList: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        terms: PropTypes.arrayOf(PropTypes.shape({
-            _id: PropTypes.string.isRequired,
+        profId: PropTypes.string.isRequired,
+        profName: PropTypes.string.isRequired,
+        courseData: PropTypes.arrayOf(PropTypes.shape({
+            courseId: PropTypes.string.isRequired,
             year: PropTypes.number.isRequired,
-            term: PropTypes.number.isRequired
+            term: PropTypes.string.isRequired
         })).isRequired
     })).isRequired,
     reviewDispatcher: PropTypes.func.isRequired,
-    closePopup: PropTypes.func.isRequired
 }
