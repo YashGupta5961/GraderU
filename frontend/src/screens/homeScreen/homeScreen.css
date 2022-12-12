@@ -15,7 +15,7 @@
     margin-bottom: 20px;
 }
 
-.homescreen-searchbox{
+.homescreen-searchbox {
     width: 80%;
     max-width: 600px;
     height: 40px;
@@ -27,14 +27,14 @@
 .homescreen-search-params {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     width: 330px;
     margin: 40px 40px 5px 40px;
 }
 
 .homescreen-filters {
-    width: 150px;
+    width: 225px;
 }
 
 .homescreen-results {

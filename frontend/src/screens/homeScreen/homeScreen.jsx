@@ -40,7 +40,6 @@ function HomeScreen() {
     const [data, setData] = useState({ data: [] });
     const [searchInput, setSearchInput] = useState("");
     const [filter, setFilter] = React.useState('Professor');
-    const [sort, setSort] = React.useState('Ascending');
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState('');
 
@@ -118,10 +117,6 @@ function HomeScreen() {
         setData({ data: [] });
     };
 
-    const handleChangeSort = (event) => {
-        setSort(event.target.value);
-    };
-
     return (
         <Container className="homescreen-container"
             sx={{
@@ -156,21 +151,6 @@ function HomeScreen() {
                         >
                             <MenuItem value={"Professor"}>Professor</MenuItem>
                             <MenuItem value={"Course"}>Course</MenuItem>
-                        </Select>
-                    </FormControl>
-
-                    <FormControl>
-                        <InputLabel id="home-search-sort-label">Sort By</InputLabel>
-                        <Select
-                            labelId="home-search-sort-label"
-                            id="home-search-sort"
-                            value={sort}
-                            label="Sort By"
-                            className='homescreen-filters'
-                            onChange={handleChangeSort}
-                        >
-                            <MenuItem value={"Ascending"}>Ascending</MenuItem>
-                            <MenuItem value={"Descending"}>Descending</MenuItem>
                         </Select>
                     </FormControl>
                 </div>
@@ -217,7 +197,6 @@ function HomeScreen() {
                     </ul>
                 </div>
             )}
-
         </Container>
     )
 }
