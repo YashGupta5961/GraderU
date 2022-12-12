@@ -39,8 +39,8 @@ export default function ReviewItem(props) {
                 let course = val.courseData[j];
                 if (course["courseId"] === props.data.course) {
                     profName = val["profName"];
-                    courseTerm = val["term"];
-                    courseYear = val["year"];
+                    courseTerm = course["term"];
+                    courseYear = course["year"];
                     break;
                 }
             }

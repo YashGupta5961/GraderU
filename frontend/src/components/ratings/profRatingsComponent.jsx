@@ -5,11 +5,11 @@ import PropTypes from "prop-types";
 import { useEffect, useId, useState } from 'react';
 import ReviewItem from './reviewItem';
 import Popup from 'reactjs-popup';
-import CreateReviewComponent from './createReview';
 // import 'reactjs-popup/dist/index.css';
 import './styles/styles.scss';
+import ProfCreateReviewComponent from './profCreateReview';
 
-export default function CourseRatingsComponent(props) {
+export default function ProfessorRatingsComponent(props) {
     // Create local state variables
     // This maintains the state for the selected value in the select dropdown
     const [filterValue, changeFilterValue] = useState('');
@@ -21,7 +21,10 @@ export default function CourseRatingsComponent(props) {
     const [filterDropdownList, changeFilterDropdownList] = useState([]);
 
     // Store all the course reviews
-    const [courseReviews, changeCourseReviews] = useState([]);
+    const [courseReviews, changeCourseReviews] = useState(props.reviewList);
+
+    const [createReviewData, changeCreateReviewData] = useState([]);
+
 
     // Store modal data
     const modalId = useId();
@@ -76,45 +79,53 @@ export default function CourseRatingsComponent(props) {
         }
     }
     // useEffect Hooks to generate state items
-    // Get all reviews
-    useEffect(() => {
-        const getReviews = async function() {
-            let tempReviewList = [];
-            for (let i = 0; i < props.reviewList.length; i++) {
-                let val = props.reviewList[i];
-                const {
-                    data: {
-                        data: reviewData
-                    }
-                } = await axios.get(`https://graderu.herokuapp.com/api/v1/reviews/${val}`);
-                tempReviewList.push(reviewData);
-            }
-            changeCourseReviews(tempReviewList);
-        };
-        if (courseReviews.length == 0) getReviews();
-    }, [props.reviewList]);
-
     // Generate filtered dropdown based on props
     useEffect(() => {
         let tempList = []
-        props.profData.forEach((val, idx) => {
+        props.profData.courseData.forEach((val, idx) => {
             tempList.push(
-                <MenuItem value={val.profId} key={idx}>
-                    {val.profName}
+                <MenuItem value={val.courseId} key={idx}>
+                    {`${val.subject}${val.number}: ${val.term} ${val.year}`}
                 </MenuItem>
             );
         });
         changeFilterDropdownList(tempList);
     }, [props.profData]);
 
+    useEffect(() => {
+        let mapval = new Map();
+        props.profData.courseData.forEach((val) => {
+            let key = `${val.subject} ${val.number}`;
+            if (mapval.has(key)) {
+                mapval.get(key).courseData.push({
+                    courseId: val.courseId,
+                    term: val.term,
+                    year: val.year
+                });
+            } else {
+                mapval.set(key, {
+                    subject: val.subject,
+                    number: val.number,
+                    courseData: [{
+                        courseId: val.courseId,
+                        term: val.term,
+                        year: val.year
+                    }]
+                });
+            }
+        });
+
+        changeCreateReviewData(Array.from(mapval.values()));
+    }, [props.profData.courseData])
+
     // Generate filtered reviews based on filterValue
     useEffect(() => {
         if (filterValue !== '') {
             let filteredReviews = []
             courseReviews.forEach((value, idx) => {
-                if (value['professor'] === filterValue) {
+                if (value['course'] === filterValue) {
                     filteredReviews.push(
-                        <ReviewItem data={value} key={idx} reviewDataDispatcher={generateNewReviews} profData={props.profData}/>
+                        <ReviewItem data={value} key={idx} reviewDataDispatcher={generateNewReviews} profData={[props.profData]}/>
                     )
                 }
             });
@@ -122,7 +133,7 @@ export default function CourseRatingsComponent(props) {
         } else {
             changeFilteredReviews(courseReviews.map((value, idx) => {
                 return (
-                    <ReviewItem data={value} key={idx} reviewDataDispatcher={generateNewReviews} profData={props.profData}/>
+                    <ReviewItem data={value} key={idx} reviewDataDispatcher={generateNewReviews} profData={[props.profData]}/>
                 );
             }));
         }
@@ -137,9 +148,9 @@ export default function CourseRatingsComponent(props) {
                     <AddIcon />
                 </IconButton>
                 <FormControl className="ratingsFormControl">
-                    <InputLabel>{`Filter by Professor`}</InputLabel>
+                    <InputLabel>{`Filter by Course`}</InputLabel>
                     <Select
-                        label={`Filter by Professor`}
+                        label={`Filter by Course`}
                         value={filterValue}
                         onChange={(e) => {
                             changeFilterValue(e.target.value);
@@ -152,11 +163,11 @@ export default function CourseRatingsComponent(props) {
             </div>
             <div className='createModal' id={modalId}>
                 <div className='ratingsCreateReview'>
-                    <CreateReviewComponent 
+                    <ProfCreateReviewComponent 
                         reviewDispatcher={generateNewReviews}
-                        filterList={props.profData}
-                        filterField={'professor'}
-                        constantField={'course'}
+                        filterList={createReviewData}
+                        filterField={'course'}
+                        constantField={'professor'}
                     />
                 </div> 
             </div>
@@ -170,15 +181,26 @@ export default function CourseRatingsComponent(props) {
 };
 
 // Define prop types for RatingsComponent
-CourseRatingsComponent.propTypes = {
-    profData: PropTypes.arrayOf(PropTypes.shape({
+ProfessorRatingsComponent.propTypes = {
+    profData: PropTypes.shape({
         profName: PropTypes.string,
         profId: PropTypes.string,
         courseData: PropTypes.arrayOf(PropTypes.shape({
             courseId: PropTypes.string,
             term: PropTypes.string,
-            year: PropTypes.number
+            year: PropTypes.number, 
+            subject: PropTypes.string,
+            number: PropTypes.number,
         }))
-    })),
-    reviewList: PropTypes.arrayOf(PropTypes.string),
+    }),
+    reviewList: PropTypes.arrayOf(PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        author: PropTypes.string.isRequired,
+        rating: PropTypes.number.isRequired,
+        text: PropTypes.string.isRequired,
+        likes: PropTypes.arrayOf(PropTypes.string.isRequired),
+        dislikes: PropTypes.arrayOf(PropTypes.string.isRequired),
+        professor: PropTypes.string.isRequired,
+        course: PropTypes.string.isRequired,
+    }).isRequired),
 }
