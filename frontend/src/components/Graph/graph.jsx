@@ -18,7 +18,7 @@ function GraphComponent(props) {
             {
               label: 'Grade Distribution',
             //   data: [55, 96, 23, 11],
-              data: props.distribution,
+              data: props.data.distribution,
               borderColor: "black",
               borderWidth: 1,
             }
@@ -30,7 +30,7 @@ function GraphComponent(props) {
     return (
         <div>
 
-            <h1 className="heading"> {props.subject} {props.number}: {props.name} </h1>
+            <h1 className="heading"> {props.data.subject} {props.data.number}: {props.data.name} </h1>
             <div className = "gradeChart">
                 <Bar
                     data={chartData}
@@ -38,7 +38,7 @@ function GraphComponent(props) {
                         plugins: {
                             title: {
                                 display: true,
-                                text: `Grade distribution for {props.profName}`,
+                                text: `Grade distribution for ${props.data.profName}`,
                                 position: "bottom"
                             },
                             legend: {
@@ -48,7 +48,7 @@ function GraphComponent(props) {
                     }}
                 />
             </div>
-                <h3 className="heading">Grade Distribution for {props.profName}</h3>
+                <h3 className="heading">Grade Distribution for {props.data.profName}</h3>
 
         </div> 
     )
