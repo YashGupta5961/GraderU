@@ -6,6 +6,7 @@ import GraphComponent from "../Graph/graph.jsx"
 import "./styles/styles.scss";
 import CourseRatingsComponent from "../ratings/courseRatingsComponent.jsx";
 import { useSearchParams } from "react-router-dom";
+import Header from "../header/header.jsx";
 
 function transformCourseData(data) {
     let mainData = new Map();
@@ -13,40 +14,40 @@ function transformCourseData(data) {
     let faqData = [];
 
     for (let courseIdx = 0; courseIdx < data.length; courseIdx++) {
-      let course = data[courseIdx];
-      reviewData = reviewData.concat(course["reviews"]);
-      faqData = faqData.concat(course["faqs"]);
+        let course = data[courseIdx];
+        reviewData = reviewData.concat(course["reviews"]);
+        faqData = faqData.concat(course["faqs"]);
 
-      for (let sectionIdx = 0; sectionIdx < course["sections"].length; sectionIdx++) {
-        let section = course["sections"][sectionIdx];
-        if (mainData.has(section["professor"]) === true) {
-          mainData.get(section["professor"])["courseData"].push({
-                courseId: course["_id"],
-                term: course["term"],
-                year: course["year"],
-                number: course["number"],
-                subject: course["subject"],
-                distribution: section["distribution"],
-                profName: section["profName"]
-              });
-        } else {
-          mainData.set(section["professor"], {
-            profId: section["professor"],
-            profName: section["profName"],
-            courseData: [
-              {
-                courseId: course["_id"],
-                term: course["term"],
-                year: course["year"],
-                number: course["number"],
-                subject: course["subject"],
-                distribution: section["distribution"],
-                profName: section["profName"]
-              }
-            ]
-          });
+        for (let sectionIdx = 0; sectionIdx < course["sections"].length; sectionIdx++) {
+            let section = course["sections"][sectionIdx];
+            if (mainData.has(section["professor"]) === true) {
+                mainData.get(section["professor"])["courseData"].push({
+                    courseId: course["_id"],
+                    term: course["term"],
+                    year: course["year"],
+                    number: course["number"],
+                    subject: course["subject"],
+                    distribution: section["distribution"],
+                    profName: section["profName"]
+                });
+            } else {
+                mainData.set(section["professor"], {
+                    profId: section["professor"],
+                    profName: section["profName"],
+                    courseData: [
+                        {
+                            courseId: course["_id"],
+                            term: course["term"],
+                            year: course["year"],
+                            number: course["number"],
+                            subject: course["subject"],
+                            distribution: section["distribution"],
+                            profName: section["profName"]
+                        }
+                    ]
+                });
+            }
         }
-      }
     }
     return [Array.from(mainData.values()), reviewData, faqData];
 }
@@ -66,11 +67,11 @@ export default function CoursePage(props) {
     const subjectParam = searchParams.get('subject');
 
     useEffect(() => {
-        const fetch_data = async function() {
+        const fetch_data = async function () {
             const url = `https://graderu.herokuapp.com/api/v1/courses?subject=${subjectParam}&number=${numberParam}`
-            const {data: {
+            const { data: {
                 data: results
-            }} = await axios.get(url);
+            } } = await axios.get(url);
 
             let [mainData, newReviewData, newfaqData] = transformCourseData(results);
 
@@ -94,7 +95,7 @@ export default function CoursePage(props) {
         }));
         changeProfFilterValue(defaultVal);
     }, [data]);
-    
+
     useEffect(() => {
         if (!isDataInit) return;
         for (let i = 0; i < data.length; i++) {
@@ -106,60 +107,64 @@ export default function CoursePage(props) {
                         {`${val.term} ${val.year}`}
                     </MenuItem>;
                 }));
-                changeYearTermFilterValue(defaultVal);               
+                changeYearTermFilterValue(defaultVal);
             }
         }
     }, [profFilterValue]);
-    
+
     return !isDataInit ? (<></>) : (
-        <Container component="main" className="CoursePage" sx={{
-            backgroundColor: 'primary.background',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'}}>
-            {/* <CssBaseline /> */}
-            <Box sx={{
-                // backgroundColor: 'primary.background',
-                mt: 5
+        <div>
+            <Header />
+            <Container component="main" className="CoursePage" sx={{
+                backgroundColor: 'primary.background',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
             }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                        <FormControl className="courseProfessorDropdown">
-                            <InputLabel>{`Filter by Professor`}</InputLabel>
-                            <Select
-                                label={`Filter by Professor`}
-                                value={profFilterValue}
-                                onChange={(e) => {
-                                    changeProfFilterValue(e.target.value);
-                                }}
-                                autoWidth
-                            >
-                                {profFilterDropdown}
-                            </Select>
-                        </FormControl>
-                        <FormControl className="courseYearTermDropdown">
-                            <InputLabel>{`Filter by Year & Term`}</InputLabel>
-                            <Select
-                                label={`Filter by Year & Term`}
-                                value={yearTermFilterValue}
-                                onChange={(e) => {
-                                    changeYearTermFilterValue(e.target.value);
-                                }}
-                                autoWidth
-                            >
-                                {yearTermFilterDropdown}
-                            </Select>
-                        </FormControl>
+                {/* <CssBaseline /> */}
+                <Box sx={{
+                    // backgroundColor: 'primary.background',
+                    mt: 5
+                }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                            <FormControl className="courseProfessorDropdown">
+                                <InputLabel>{`Filter by Professor`}</InputLabel>
+                                <Select
+                                    label={`Filter by Professor`}
+                                    value={profFilterValue}
+                                    onChange={(e) => {
+                                        changeProfFilterValue(e.target.value);
+                                    }}
+                                    autoWidth
+                                >
+                                    {profFilterDropdown}
+                                </Select>
+                            </FormControl>
+                            <FormControl className="courseYearTermDropdown">
+                                <InputLabel>{`Filter by Year & Term`}</InputLabel>
+                                <Select
+                                    label={`Filter by Year & Term`}
+                                    value={yearTermFilterValue}
+                                    onChange={(e) => {
+                                        changeYearTermFilterValue(e.target.value);
+                                    }}
+                                    autoWidth
+                                >
+                                    {yearTermFilterDropdown}
+                                </Select>
+                            </FormControl>
+                        </Box>
+                        <GraphComponent data={yearTermFilterValue} />
                     </Box>
-                    <GraphComponent data={yearTermFilterValue}/>
+                    <Box>
+                        <Typography sx={{ m: 30 }}> Import FAQ Component here</Typography>
+                    </Box>
+                    <Box>
+                        <CourseRatingsComponent profData={data} reviewList={reviewData} />
+                    </Box>
                 </Box>
-                <Box>
-                    <Typography sx={{m: 30}}> Import FAQ Component here</Typography>
-                </Box>
-                <Box>
-                    <CourseRatingsComponent profData={data} reviewList={reviewData}/>
-                </Box>
-            </Box>
-        </Container>
+            </Container>
+        </div>
     );
 };
