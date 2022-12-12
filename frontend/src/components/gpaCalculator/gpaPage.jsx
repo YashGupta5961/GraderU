@@ -5,7 +5,7 @@ import "../gpaCalculator/styles/courseItem.scss"
 import curve from "../gpaCalculator/styles/bellcurve.png" 
 import { Slider } from '@mui/material';
 import axios from 'axios'
-import { number } from "prop-types";
+// import { number } from "prop-types";
 
     /* This function takes in the grade distribution array and the average array 
     to return an array of all the quartiles for a class*/
@@ -104,6 +104,10 @@ export default function GpaPage(props) {
     const [courseMap, updateCourseMap] = useState(new Map())
     const [professors, updateProfessors] = useState([])
 
+    useEffect(() => {
+      console.log(coursesAdded)
+    }, [coursesAdded])
+
     // Data fetching using our API through axios and loading into state variables to be used throughout the page
     useEffect(() => {
       const fetch_data = async function() {
@@ -126,19 +130,24 @@ export default function GpaPage(props) {
       updateProfessors(profprofmap(courseMap))
     }, [courseMap])
 
-    let displayCourses = [
-      {
-        course_name: 'CS409',
-        course_gpa: '3.8'
-      },
-      {
-        course_name: 'CS225',
-        course_gpa: '4.0'
-      }
-    ]
 
     // Inner component to be used for each row of the course added list - helps avoid repetition of code
-    function CourseItem(props) {  
+    function CourseItem(props) {
+      const [curr_gpa, update_currGPA] = useState(props.data.course_gpa)
+      const quartileToIdx = {
+        0: 0,
+        25: 1,
+        50: 2,
+        75: 3,
+        100: 4
+      }
+      let gpa_distrib = props.data.course_distribution
+
+      const handleSliderChange = (event) => {
+        let idx = event.target.value
+        update_currGPA((gpa_distrib[quartileToIdx[idx]]).toFixed(2))
+      };
+
       return (
           <div className = "entry">
                   <div className = "col left" id = "course_name">
@@ -154,10 +163,11 @@ export default function GpaPage(props) {
                       step={25}
                       marks
                       min={0}
-                      max={100}/>
+                      max={100}
+                      onChange = {handleSliderChange}/>
                   </div>
                   <div className = "col last" id="course_curve">
-                      <h2> Your GPA </h2>
+                    <h2> {curr_gpa} </h2>
                   </div>
         </div>
       );
@@ -165,7 +175,7 @@ export default function GpaPage(props) {
 
     const handleProfChange = (event) => {
       setProf(event.target.value);
-      console.log(event.target.value)
+      // console.log(event.target.value)
       if(event.target.value !== "None Selected"){
         updateButtonDisabled(false)
       }
@@ -183,20 +193,27 @@ export default function GpaPage(props) {
     };
 
     function addCourse(){
-      let currCourse = ((courseInput.replace(/\s/g, '' )).toUpperCase) + numberInput
-
+      let currCourse = ((courseInput.replace(/\s/g, '' )).toUpperCase()) + numberInput
+      let prof_GPAList = courseMap.get(prof)
+      let prof_avgGPA = (prof_GPAList[2]).toFixed(2)
+      changeCoursesAdded(coursesAdded => [...coursesAdded, 
+                                          {
+                                            course_name: currCourse,
+                                            course_gpa: prof_avgGPA,
+                                            course_distribution: prof_GPAList
+                                          }]
+      )
     }
 
     useEffect(() => {
       if(courseInput.length >= 2 && numberInput.length == 3){
         updateSearchDisabled(false)
-        // updateButtonDisabled(false)
       }
       else {
         updateSearchDisabled(true)
-        // updateButtonDisabled(true)
       }
     }, [courseInput, numberInput]); 
+
 
   return (
 
@@ -242,22 +259,21 @@ export default function GpaPage(props) {
         </div>
 
         <div>
-          {displayCourses.map((e) =>
-            <div><CourseItem data={e} key={e} value={e}/></div>
+          {coursesAdded.map((e) =>
+            <div><CourseItem data={e}/></div>
           )}
         </div>
     </div>
+  
   );
 };
 
-// Gpa.PropTypes = {
-    
-//     gpaData: PropTypes.arrayOf(PropTypes.shape({
-//         _id: PropTypes.string.isRequired,
-//         name: PropTypes.string.isRequired,
-//         avgGPA: PropTypes.number.isRequired,
-//         graph: PropTypes.string.isRequired,
-//     })).isRequired
+// CourseItem.propTypes = {
+//     data: PropTypes.shape({
+//         course_name: PropTypes.string.isRequired,
+//         course_gpa: PropTypes.string.isRequired,
+//         course_distribution: arrayOf(PropTypes.number).isRequired
+//     }).isRequired
 // }
 
 

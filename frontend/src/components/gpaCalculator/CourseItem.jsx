@@ -32,9 +32,3 @@ export default function CourseItem(props) {
 
 
 
-// CourseItem.propTypes = {
-//     data: PropTypes.shape({
-//         course_name: PropTypes.string.isRequired,
-//         course_gpa: PropTypes.string.isRequired,
-//     }).isRequired
-// }
