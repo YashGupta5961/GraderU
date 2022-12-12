@@ -10,6 +10,7 @@ import Verify from "./components/auth/Verify";
 import HomeScreen from "./screens/homeScreen/homeScreen";
 import CoursePage from "./components/CoursePage/CoursePage";
 import ProfessorPage from "./components/ProfessorPage/profPage";
+import GpaPage from "./components/gpaCalculator/gpaPage";
 
 const theme = createTheme({
   palette: {
@@ -49,6 +50,7 @@ export default function App(props) {
           <Route path="/verify" element={<Verify />} />
           <Route path="/courses" element={<CoursePage />} />
           <Route path="/professors" element={<ProfessorPage />} />
+          <Route path="/GPA-calculator" element={<GpaPage />} />
         </Routes>
       </HashRouter>
     </ThemeProvider>
