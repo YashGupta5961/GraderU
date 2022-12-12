@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { FormControl, IconButton, InputLabel, List, MenuItem, Select } from '@mui/material';
+import { Box, FormControl, IconButton, InputLabel, List, MenuItem, Select } from '@mui/material';
 import axios from 'axios';
 import PropTypes from "prop-types";
 import { useEffect, useId, useState } from 'react';
@@ -74,7 +74,7 @@ export default function ProfessorRatingsComponent(props) {
     }
 
     window.onclick = function(event) {
-        if (event.target == modalDiv) {
+        if (event.target === modalDiv) {
             modalDiv.style.display = "none";
         }
     }
@@ -142,8 +142,8 @@ export default function ProfessorRatingsComponent(props) {
     // Return Ratings component
     return (
     <>
-        <div className="ratingsComponent">
-            <div className="ratingsButtonsDiv">
+        <Box className="ratingsComponent">
+            <Box className="ratingsButtonsDiv">
                 <IconButton aria-label="addReview" className='ratingsAddButton' onClick={addButtonClick}>
                     <AddIcon />
                 </IconButton>
@@ -160,23 +160,23 @@ export default function ProfessorRatingsComponent(props) {
                         {filterDropdownList}
                     </Select>
                 </FormControl>
-            </div>
-            <div className='createModal' id={modalId}>
-                <div className='ratingsCreateReview'>
+            </Box>
+            <Box className='createModal' id={modalId}>
+                <Box className='ratingsCreateReview'>
                     <ProfCreateReviewComponent 
                         reviewDispatcher={generateNewReviews}
                         filterList={createReviewData}
                         filterField={'course'}
                         constantField={'professor'}
                     />
-                </div> 
-            </div>
-            <div>
+                </Box> 
+            </Box>
+            <Box>
                 <List>
                     {filteredReviews}
                 </List>
-            </div>
-        </div>
+            </Box>
+        </Box>
     </>);
 };
 

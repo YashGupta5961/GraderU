@@ -71,7 +71,7 @@ export default function CourseRatingsComponent(props) {
     }
 
     window.onclick = function(event) {
-        if (event.target == modalDiv) {
+        if (event.target === modalDiv) {
             modalDiv.style.display = "none";
         }
     }
@@ -91,7 +91,7 @@ export default function CourseRatingsComponent(props) {
             }
             changeCourseReviews(tempReviewList);
         };
-        if (courseReviews.length == 0) getReviews();
+        if (courseReviews.length === 0) getReviews();
     }, [props.reviewList]);
 
     // Generate filtered dropdown based on props

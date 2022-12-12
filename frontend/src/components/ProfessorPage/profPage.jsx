@@ -1,11 +1,12 @@
 import { React, useState, useEffect } from "react";
-import { Button, TextField, Box, FormControl, IconButton, InputLabel, List, MenuItem, Select, Grid, Container } from '@mui/material';
+import { Button, TextField, Box, FormControl, IconButton, InputLabel, List, MenuItem, Select, Grid, Container, CssBaseline, ListItem } from '@mui/material';
 import axios from 'axios'
 import { number } from "prop-types";
 import { Typography } from '@mui/material';
 import "./profPage.scss"
 import ProfessorRatingsComponent from "../ratings/profRatingsComponent";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { color } from "@mui/system";
 
 function avgGpaProf(data, prof_name) {
     let toreturn = 0;
@@ -32,7 +33,7 @@ function transformProfessorData(data) {
             "term": course["term"],
             "year": course["year"],
             "courseId": course["_id"],
-            "courseName": course["name"],
+            "name": course["name"],
             "subject": course["subject"],
             "number": course["number"]
         })
@@ -83,8 +84,10 @@ export default function ProfPage(props) {
             num += 1;
         });
 
-        num = (num == 0) ? 1 : num;
-        changeAvgRating(Math.floor(sum / num));
+        if (num !== 0)
+            changeAvgRating(Math.floor(sum / num));
+        else
+            changeAvgRating("not rated");
     }, [reviewData]);
     // List components and functions to be used here 
     function CourseItem(props) {
@@ -103,51 +106,94 @@ export default function ProfPage(props) {
             fetch_course_data()
         }, []);
 
-      return (
-            <div className = "row">
-                    <div className = "column left">
-                        <h5>{props.data.subject}{props.data.number}</h5>
-                    </div>
-                    <div className = "column middle">
-                        <h5>{props.data.name}</h5>
-                    </div>
-                    <div className = "column right">
-                        <h5>{props.data.term}{props.data.year}</h5>
-                    </div>
-                    <div className = "column last">
-                        <h5>{avgGPA}</h5>
-                    </div>
-            </div>
+        const navigate = useNavigate();
+        return (
+            <Box className = "row" onClick={() => navigate(`/course?subject=${props.data.subject}&number=${props.data.number}`)} sx={{ 
+                width: "100%", 
+                backgroundColor: "#282828",
+                marginBottom: 2,
+                borderRadius: 5,
+                padding: 2,
+                boxShadow: "0px 5px 10px 0px rgba(0, 0, 0, 0.5)",
+                cursor: 'pointer'
+            }}>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                }}>
+                    <Typography variant="h5">{props.data.subject}{props.data.number} : {props.data.name}</Typography>
+                    <Typography variant="h5">{props.data.term} {props.data.year}</Typography>
+                </Box>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'left',
+                }}>
+                    <Typography variant="h5">Average GPA: {avgGPA}</Typography>
+                </Box>
+            </Box>
         );
     }
 
     return !isDataInit ? (<></>) : (
-        <Container className="profPage">
-            <Box sx={{mt: 5}}>
-                <Typography variant="h3">{`Professor Name: ${profNameParam}`}</Typography>
-                <Typography variant="h5">{`Average Rating: ${avgRating}`}</Typography>
-                <Box>
-                    <div className="row">
-                        <div className="column left">
-                            <h2>Course Code</h2>
-                        </div>
-                        <div className="column middle">
-                            <h2>Course Name</h2>
-                        </div>
-                        <div className="column right">
-                            <h2>Semester</h2>
-                        </div>
-                        <div className="column last">
-                            <h2>Average GPA</h2>
-                        </div>
-                    </div>
-                    <div>
-                        {profData.courseData.map((val, idx) =>
-                            <CourseItem data={val} key={idx} profName={profNameParam}/>
-                        )}
-                    </div>
+        <Container className="profPage" sx={{
+            marginTop: 5,
+        }}>
+            <CssBaseline />
+            <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                width: "100%",
+                marginBottom: 5,
+                padding: 5
+            }}>
+                <Box sx={{
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    backgroundColor: 'primary.background',
+                    width: "100%",
+                    borderRadius: 2,
+                    marginBottom: 5,
+                    padding: 5
+                }}>
+                    <Typography variant="h3">{`Professor Name: ${profNameParam}`}</Typography>
+                    <Typography variant="h5">{`Average Rating: ${avgRating}`}</Typography>
                 </Box>
-                <Box>
+            
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    flexWrap: 'wrap',
+                    width: "100%",
+                    backgroundColor: 'primary.background',
+                    borderRadius: 2,
+                    padding: 2,
+                    marginBottom: 5
+                }}>
+                    <Typography variant="h4" sx={{
+                        marginBottom: 3, 
+                        textAlign: 'center', 
+                        width:"100%"
+                    }}>
+                        {`Courses Taught`}
+                    </Typography>
+                    {profData.courseData.map((val, idx) =>
+                        <CourseItem data={val} key={idx} profName={profNameParam}/>
+                    )}
+                    
+                </Box>
+                <Box sx={{
+                    backgroundColor: 'primary.background',
+                    borderRadius: 2,
+                    padding: 2,
+                    marginBottom: 5,
+                    width: "100%"
+                }}>
+                    <Typography variant="h4" sx={{marginBottom: 3, textAlign: 'center', width:"100%"}}>{`Ratings`}</Typography>
                     <ProfessorRatingsComponent profData={profData} reviewList={reviewData}></ProfessorRatingsComponent>
                 </Box>
             </Box>
