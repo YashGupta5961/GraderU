@@ -1,5 +1,5 @@
 import React from 'react'
-import './homeScreenSearchItem.css'
+import './homeScreenItem.css'
 
 function HomeScreenSearchItem(props) {
     return (
