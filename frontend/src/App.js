@@ -1,6 +1,6 @@
 import React  from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
-import { createTheme, ThemeProvider, Typography } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import ForgotPassword from "./components/auth/ForgotPassword";
