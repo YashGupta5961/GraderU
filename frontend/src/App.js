@@ -10,6 +10,8 @@ import ResetPassword from "./components/auth/ResetPassword";
 import Signup from "./components/auth/Signup";
 import Verify from "./components/auth/Verify";
 import HomeScreen from "./screens/homeScreen/homeScreen";
+import CoursePage from "./components/CoursePage/CoursePage";
+import ProfessorPage from "./components/ProfessorPage/profPage";
 
 const theme = createTheme({
   palette: {
@@ -75,6 +77,8 @@ export default function App(props) {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify" element={<Verify />} />
+          <Route path="/courses" element={<CoursePage />} />
+          <Route path="/professors" element={<ProfessorPage />} />
         </Routes>
       </HashRouter>
     </ThemeProvider>
