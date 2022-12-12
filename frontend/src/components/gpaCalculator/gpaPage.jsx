@@ -16,6 +16,7 @@ import "./styles/gpaPage.scss";
 import "../gpaCalculator/styles/courseItem.scss";
 import curve from "../gpaCalculator/styles/bellcurve.png";
 import { Slider } from "@mui/material";
+import Header from "../header/header";
 import axios from "axios";
 // import { number } from "prop-types";
 
@@ -216,7 +217,7 @@ export default function GpaPage(props) {
     };
 
     const handleChildComponentChange = (id, new_value) => {
-        changeGpaMap({...gpaMap,  [id]: new_value});
+        changeGpaMap({ ...gpaMap, [id]: new_value });
     }
 
     function addCourse() {
@@ -244,84 +245,87 @@ export default function GpaPage(props) {
     }, [courseInput, numberInput]);
 
     return (
-        <div className="gpaPage">
-            <br></br>
-            <h1 id="pred">Your Predicted GPA is:</h1>
-            <br></br>
-            <h1 id="GPAVal"> {avgGPA.toFixed(2)} </h1>
-            <br></br>
-            <br></br>
+        <div>
+            <Header />
+            <div className="gpaPage">
+                <br></br>
+                <h1 id="pred">Your Predicted GPA is:</h1>
+                <br></br>
+                <h1 id="GPAVal"> {avgGPA.toFixed(2)} </h1>
+                <br></br>
+                <br></br>
 
-            <TextField
-                id="course-search"
-                label="Search Course"
-                placeholder="(e.g. CS)"
-                type="search"
-                variant="outlined"
-                helperText="Entry must be at minimum a length of 2"
-                onChange={handleCourseChange}
-            />
-            <br></br>
-            <br></br>
-            <TextField
-                id="number-search"
-                label="Search Number"
-                placeholder="(e.g. 409)"
-                type="search"
-                variant="outlined"
-                helperText="Entry must be a number of length 3"
-                onChange={handleNumberChange}
-            />
-            <br></br>
-            <br></br>
-            <TextField
-                disabled={SearchDisabled}
-                id="prof-search"
-                select
-                label="Professor"
-                helperText="Please select Professor"
-                value={prof}
-                onChange={handleProfChange}
-                SelectProps={{ native: true }}
-            >
-                {professors.map((option) => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
-            </TextField>
-            <br></br>
-            <br></br>
-            <Button
-                disabled={SearchDisabled}
-                variant="contained"
-                onClick={addCourse}
-            >
-                {" "}
-                ADD COURSE{" "}
-            </Button>
+                <TextField
+                    id="course-search"
+                    label="Search Course"
+                    placeholder="(e.g. CS)"
+                    type="search"
+                    variant="outlined"
+                    helperText="Entry must be at minimum a length of 2"
+                    onChange={handleCourseChange}
+                />
+                <br></br>
+                <br></br>
+                <TextField
+                    id="number-search"
+                    label="Search Number"
+                    placeholder="(e.g. 409)"
+                    type="search"
+                    variant="outlined"
+                    helperText="Entry must be a number of length 3"
+                    onChange={handleNumberChange}
+                />
+                <br></br>
+                <br></br>
+                <TextField
+                    disabled={SearchDisabled}
+                    id="prof-search"
+                    select
+                    label="Professor"
+                    helperText="Please select Professor"
+                    value={prof}
+                    onChange={handleProfChange}
+                    SelectProps={{ native: true }}
+                >
+                    {professors.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </TextField>
+                <br></br>
+                <br></br>
+                <Button
+                    disabled={SearchDisabled}
+                    variant="contained"
+                    onClick={addCourse}
+                >
+                    {" "}
+                    ADD COURSE{" "}
+                </Button>
 
-            <div className="row">
-                <div className="column left">
-                    <h2>Courses</h2>
-                </div>
-                <div className="column middle">
-                    <h2>Course GPA</h2>
-                </div>
-                <div className="column right">
-                    <h2>Grade Distribution</h2>
-                </div>
-                <div className="column last">
-                    <h2>Your GPA</h2>
-                </div>
-            </div>
-
-            <div>
-                {coursesAdded.map((e, idx) => (
-                    <div key={idx}>
-                        <CourseItem data={e} id={genId(e)} changeHandler={handleChildComponentChange}/>
+                <div className="row">
+                    <div className="column left">
+                        <h2>Courses</h2>
                     </div>
-                ))}
+                    <div className="column middle">
+                        <h2>Course GPA</h2>
+                    </div>
+                    <div className="column right">
+                        <h2>Grade Distribution</h2>
+                    </div>
+                    <div className="column last">
+                        <h2>Your GPA</h2>
+                    </div>
+                </div>
+
+                <div>
+                    {coursesAdded.map((e, idx) => (
+                        <div key={idx}>
+                            <CourseItem data={e} id={genId(e)} changeHandler={handleChildComponentChange} />
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
