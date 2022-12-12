@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { Button, TextField, Box, FormControl, IconButton, InputLabel, List, MenuItem, Select, Grid, Container } from '@mui/material';
+import { Button, TextField, Box, FormControl, IconButton, InputLabel, List, MenuItem, Select, Grid, Container, CssBaseline } from '@mui/material';
 import axios from 'axios'
 import { Typography } from '@mui/material';
 import GraphComponent from "../Graph/graph.jsx"
@@ -108,13 +108,17 @@ export default function CoursePage(props) {
     }, [profFilterValue]);
     
     return !isDataInit ? (<></>) : (
-        <Container className="CoursePage" sx={{
+        <Container component="main" className="CoursePage" sx={{
+            backgroundColor: 'primary.background',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'}}>
-            <Box sx={{mt: 5}}>
+            {/* <CssBaseline /> */}
+            <Box sx={{
+                // backgroundColor: 'primary.background',
+                mt: 5
+            }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                    <GraphComponent data={yearTermFilterValue}/>
                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
                         <FormControl className="courseProfessorDropdown">
                             <InputLabel>{`Filter by Professor`}</InputLabel>
@@ -143,6 +147,7 @@ export default function CoursePage(props) {
                             </Select>
                         </FormControl>
                     </Box>
+                    <GraphComponent data={yearTermFilterValue}/>
                 </Box>
                 <Box>
                     <Typography sx={{m: 30}}> Import FAQ Component here</Typography>

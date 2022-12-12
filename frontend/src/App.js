@@ -9,6 +9,7 @@ import Verify from "./components/auth/Verify";
 import CourseRatingsComponent from "./components/ratings/courseRatingsComponent";
 import CoursePage from "./components/CoursePage/CoursePage";
 import ProfPage from "./components/ProfessorPage/profPage";
+import GpaPage from "./components/gpaCalculator/gpaPage";
 
 let tempData = [
   {
@@ -176,12 +177,13 @@ export function App(_props) {
 
   return (
     <React.StrictMode>
-      {/* <ThemeProvider theme={theme}> */}
+      <ThemeProvider theme={theme}>
         {/* {router} */}
         {/* <CourseRatingsComponent profData={tempData} reviewList={["6396cae509273ce58e0cc134", "639001b951b4f01dd0bfef57", ]}/> */}
-        {/* <CoursePage subject="ECE" number={391}></CoursePage> */}
-        <ProfPage profName={'Bailey, Michael D'}></ProfPage>
-      {/* </ThemeProvider> */}
+        <CoursePage subject="ECE" number={391}></CoursePage>
+        {/* <ProfPage profName={'Bailey, Michael D'}></ProfPage> */}
+      </ThemeProvider>
+      {/* <GpaPage></GpaPage> */}
     </React.StrictMode>
   ); 
 };
