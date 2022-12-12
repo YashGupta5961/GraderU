@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import { Button, TextField, Box, FormControl, IconButton, InputLabel, List, MenuItem, Select, Grid, Container, CssBaseline } from '@mui/material';
 import axios from 'axios'
 import { Typography } from '@mui/material';
-import GraphComponent from "../Graph/graph.jsx"
+import GraphComponent from "../Graph/graph.jsx";
 import "./styles/styles.scss";
 import CourseRatingsComponent from "../ratings/courseRatingsComponent.jsx";
 import { useSearchParams } from "react-router-dom";
@@ -25,6 +25,7 @@ function transformCourseData(data) {
                     courseId: course["_id"],
                     term: course["term"],
                     year: course["year"],
+                    name: course["name"],
                     number: course["number"],
                     subject: course["subject"],
                     distribution: section["distribution"],
@@ -40,6 +41,7 @@ function transformCourseData(data) {
                             term: course["term"],
                             year: course["year"],
                             number: course["number"],
+                            name: course["name"],
                             subject: course["subject"],
                             distribution: section["distribution"],
                             profName: section["profName"]
@@ -113,58 +115,74 @@ export default function CoursePage(props) {
     }, [profFilterValue]);
 
     return !isDataInit ? (<></>) : (
-        <div>
-            <Header />
-            <Container component="main" className="CoursePage" sx={{
+        <Container className="CoursePage" sx={{
+            marginTop: 5
+        }}>
+            <CssBaseline />
+            <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                width: "100%",
                 backgroundColor: 'primary.background',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
+                borderRadius: 2,
+                marginBottom: 5
             }}>
-                {/* <CssBaseline /> */}
-                <Box sx={{
-                    // backgroundColor: 'primary.background',
-                    mt: 5
-                }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <FormControl className="courseProfessorDropdown">
-                                <InputLabel>{`Filter by Professor`}</InputLabel>
-                                <Select
-                                    label={`Filter by Professor`}
-                                    value={profFilterValue}
-                                    onChange={(e) => {
-                                        changeProfFilterValue(e.target.value);
-                                    }}
-                                    autoWidth
-                                >
-                                    {profFilterDropdown}
-                                </Select>
-                            </FormControl>
-                            <FormControl className="courseYearTermDropdown">
-                                <InputLabel>{`Filter by Year & Term`}</InputLabel>
-                                <Select
-                                    label={`Filter by Year & Term`}
-                                    value={yearTermFilterValue}
-                                    onChange={(e) => {
-                                        changeYearTermFilterValue(e.target.value);
-                                    }}
-                                    autoWidth
-                                >
-                                    {yearTermFilterDropdown}
-                                </Select>
-                            </FormControl>
-                        </Box>
-                        <GraphComponent data={yearTermFilterValue} />
-                    </Box>
-                    <Box>
-                        <Typography sx={{ m: 30 }}> Import FAQ Component here</Typography>
-                    </Box>
-                    <Box>
-                        <CourseRatingsComponent profData={data} reviewList={reviewData} />
-                    </Box>
+                <Box sx={{ 
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    justifyContent: 'space-around',
+                    width: "100%",
+                    backgroundColor: 'primary.background',
+                    borderRadius: 2,
+                    padding: 2
+                }} className='coursePageDropdowns'>
+                    <FormControl className="courseProfessorDropdown" sx={{ alignSelf: 'center' }}>
+                        <InputLabel>{`Filter by Professor`}</InputLabel>
+                        <Select
+                            label={`Filter by Professor`}
+                            value={profFilterValue}
+                            onChange={(e) => {
+                                changeProfFilterValue(e.target.value);
+                            }}
+                            autoWidth
+                        >
+                            {profFilterDropdown}
+                        </Select>
+                    </FormControl>
+                    <FormControl className="courseYearTermDropdown" sx={{ alignSelf: 'center' }}>
+                        <InputLabel>{`Filter by Year & Term`}</InputLabel>
+                        <Select
+                            label={`Filter by Year & Term`}
+                            value={yearTermFilterValue}
+                            onChange={(e) => {
+                                changeYearTermFilterValue(e.target.value);
+                            }}
+                            autoWidth
+                        >
+                            {yearTermFilterDropdown}
+                        </Select>
+                    </FormControl>
                 </Box>
-            </Container>
-        </div>
+                <GraphComponent data={yearTermFilterValue}/>
+            </Box>
+            <Box sx={{
+                backgroundColor: 'primary.background',
+                borderRadius: 2,
+                marginBottom: 5,
+                padding: 2
+            }}>
+                <Typography sx={{m: 0, textAlign: 'center'}}> Import FAQ Component here</Typography>
+            </Box>
+            <Box sx={{
+                backgroundColor: 'primary.background',
+                borderRadius: 2,
+                padding: 2,
+                marginBottom: 5,
+            }}>
+                <CourseRatingsComponent profData={data} reviewList={reviewData}/>
+            </Box>
+        </Container>
     );
 };

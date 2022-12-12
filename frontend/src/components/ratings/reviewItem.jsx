@@ -49,15 +49,14 @@ export default function ReviewItem(props) {
     }
 
     const getUserId = async function () {
-        // const {
-        //     data: {
-        //         data: {
-        //             _id: userId
-        //         }
-        //     }
-        // } = await axios.get(`https://graderu.herokuapp.com/api/v1/users/me`);
-        // return userId;
-        return "638fff1a51b4f01dd0bfef48";
+        const {
+            data: {
+                data: {
+                    _id: userId
+                }
+            }
+        } = await axios.get(`https://graderu.herokuapp.com/api/v1/users/me`);
+        return userId;
     };
 
     useEffect(() => {
