@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import { Button, TextField, Box, FormControl, IconButton, InputLabel, List, MenuItem, Select, Grid, Container, CssBaseline } from '@mui/material';
 import axios from 'axios'
 import { Typography } from '@mui/material';
-import GraphComponent from "../Graph/graph.jsx"
+import GraphComponent from "../Graph/graph.jsx";
 import "./styles/styles.scss";
 import CourseRatingsComponent from "../ratings/courseRatingsComponent.jsx";
 import { useSearchParams } from "react-router-dom";
@@ -18,36 +18,37 @@ function transformCourseData(data) {
         reviewData = reviewData.concat(course["reviews"]);
         faqData = faqData.concat(course["faqs"]);
 
-      for (let sectionIdx = 0; sectionIdx < course["sections"].length; sectionIdx++) {
-        let section = course["sections"][sectionIdx];
-        if (mainData.has(section["professor"]) === true) {
-          mainData.get(section["professor"])["courseData"].push({
-                courseId: course["_id"],
-                term: course["term"],
-                year: course["year"],
-                name: course["name"],
-                number: course["number"],
-                subject: course["subject"],
-                distribution: section["distribution"],
-                profName: section["profName"]
-              });
-        } else {
-          mainData.set(section["professor"], {
-            profId: section["professor"],
-            profName: section["profName"],
-            courseData: [
-              {
-                courseId: course["_id"],
-                term: course["term"],
-                year: course["year"],
-                number: course["number"],
-                name: course["name"],
-                subject: course["subject"],
-                distribution: section["distribution"],
-                profName: section["profName"]
-              }
-            ]
-          });
+        for (let sectionIdx = 0; sectionIdx < course["sections"].length; sectionIdx++) {
+            let section = course["sections"][sectionIdx];
+            if (mainData.has(section["professor"]) === true) {
+                mainData.get(section["professor"])["courseData"].push({
+                    courseId: course["_id"],
+                    term: course["term"],
+                    year: course["year"],
+                    name: course["name"],
+                    number: course["number"],
+                    subject: course["subject"],
+                    distribution: section["distribution"],
+                    profName: section["profName"]
+                });
+            } else {
+                mainData.set(section["professor"], {
+                    profId: section["professor"],
+                    profName: section["profName"],
+                    courseData: [
+                        {
+                            courseId: course["_id"],
+                            term: course["term"],
+                            year: course["year"],
+                            number: course["number"],
+                            name: course["name"],
+                            subject: course["subject"],
+                            distribution: section["distribution"],
+                            profName: section["profName"]
+                        }
+                    ]
+                });
+            }
         }
     }
     return [Array.from(mainData.values()), reviewData, faqData];

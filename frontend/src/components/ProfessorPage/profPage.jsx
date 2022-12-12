@@ -108,7 +108,7 @@ export default function ProfPage(props) {
 
         const navigate = useNavigate();
         return (
-            <Box className = "row" onClick={() => navigate(`/course?subject=${props.data.subject}&number=${props.data.number}`)} sx={{ 
+            <Box className = "row" onClick={() => navigate(`/courses?subject=${props.data.subject}&number=${props.data.number}`)} sx={{ 
                 width: "100%", 
                 backgroundColor: "#282828",
                 marginBottom: 2,
