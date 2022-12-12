@@ -6,6 +6,7 @@ const router = express.Router(); // creates router
 
 router.post("/signup", authController.signup); // route for signup
 router.post("/login", authController.login); // route for login
+router.get("/logout", authController.logout); // route for logout
 router.post("/forgotPassword", authController.forgotPassword); // route for forgot password
 router.patch("/resetPassword", authController.resetPassword); // route for reset password
 
