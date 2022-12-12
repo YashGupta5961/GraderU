@@ -1,8 +1,9 @@
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import Container from '@mui/material/Container';
+import Select from '@mui/material/Select';
 import React, { useState } from 'react';
 
 import HomeScreenSearchItem from '../../components/homeScreen/homeScreenSearchItem';
@@ -70,7 +71,13 @@ function HomeScreen() {
     })
 
     return (
-        <div className="homescreen-container">
+        <Container className="homescreen-container"
+            sx={{
+                backgroundColor: "primary.background",
+                display: "flex",
+                flexDirection: "column",
+            }}
+        >
             <div className="homescreen-search">
                 <TextField
                     id="search-bar"
@@ -131,7 +138,7 @@ function HomeScreen() {
 
                 </ul>
             </div>
-        </div>
+        </Container>
     )
 }
 

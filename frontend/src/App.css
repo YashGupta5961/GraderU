@@ -1,5 +1,6 @@
 :root {
-    --clr-purple: #b4a7d6;
+    --clr-purple: #9575cd;
+    background-color: #404258;
 }
 
 * {
@@ -12,6 +13,7 @@
 
 .app-container {
     text-align: center;
+    height: 100%;
 }
 
 .app-header {
