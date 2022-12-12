@@ -7,6 +7,7 @@ import "./profPage.scss"
 import ProfessorRatingsComponent from "../ratings/profRatingsComponent";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { color } from "@mui/system";
+import Header from "../header/header";
 
 function avgGpaProf(data, prof_name) {
     let toreturn = 0;
@@ -108,8 +109,8 @@ export default function ProfPage(props) {
 
         const navigate = useNavigate();
         return (
-            <Box className = "row" onClick={() => navigate(`/courses?subject=${props.data.subject}&number=${props.data.number}`)} sx={{ 
-                width: "100%", 
+            <Box className="row" onClick={() => navigate(`/courses?subject=${props.data.subject}&number=${props.data.number}`)} sx={{
+                width: "100%",
                 backgroundColor: "#282828",
                 marginBottom: 2,
                 borderRadius: 5,
@@ -135,68 +136,71 @@ export default function ProfPage(props) {
     }
 
     return !isDataInit ? (<></>) : (
-        <Container className="profPage" sx={{
-            marginTop: 5,
-        }}>
-            <CssBaseline />
-            <Box sx={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                width: "100%",
-                marginBottom: 5,
-                padding: 5
+        <div>
+            <Header />
+            <Container className="profPage" sx={{
+                marginTop: 5,
             }}>
+                <CssBaseline />
                 <Box sx={{
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    alignItems: 'center', 
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: 'primary.background',
                     width: "100%",
-                    borderRadius: 2,
                     marginBottom: 5,
                     padding: 5
                 }}>
-                    <Typography variant="h3">{`Professor Name: ${profNameParam}`}</Typography>
-                    <Typography variant="h5">{`Average Rating: ${avgRating}`}</Typography>
-                </Box>
-            
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    flexWrap: 'wrap',
-                    width: "100%",
-                    backgroundColor: 'primary.background',
-                    borderRadius: 2,
-                    padding: 2,
-                    marginBottom: 5
-                }}>
-                    <Typography variant="h4" sx={{
-                        marginBottom: 3, 
-                        textAlign: 'center', 
-                        width:"100%"
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'primary.background',
+                        width: "100%",
+                        borderRadius: 2,
+                        marginBottom: 5,
+                        padding: 5
                     }}>
-                        {`Courses Taught`}
-                    </Typography>
-                    {profData.courseData.map((val, idx) =>
-                        <CourseItem data={val} key={idx} profName={profNameParam}/>
-                    )}
-                    
+                        <Typography variant="h3">{`Professor Name: ${profNameParam}`}</Typography>
+                        <Typography variant="h5">{`Average Rating: ${avgRating}`}</Typography>
+                    </Box>
+
+                    <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                        flexWrap: 'wrap',
+                        width: "100%",
+                        backgroundColor: 'primary.background',
+                        borderRadius: 2,
+                        padding: 2,
+                        marginBottom: 5
+                    }}>
+                        <Typography variant="h4" sx={{
+                            marginBottom: 3,
+                            textAlign: 'center',
+                            width: "100%"
+                        }}>
+                            {`Courses Taught`}
+                        </Typography>
+                        {profData.courseData.map((val, idx) =>
+                            <CourseItem data={val} key={idx} profName={profNameParam} />
+                        )}
+
+                    </Box>
+                    <Box sx={{
+                        backgroundColor: 'primary.background',
+                        borderRadius: 2,
+                        padding: 2,
+                        marginBottom: 5,
+                        width: "100%"
+                    }}>
+                        <Typography variant="h4" sx={{ marginBottom: 3, textAlign: 'center', width: "100%" }}>{`Ratings`}</Typography>
+                        <ProfessorRatingsComponent profData={profData} reviewList={reviewData}></ProfessorRatingsComponent>
+                    </Box>
                 </Box>
-                <Box sx={{
-                    backgroundColor: 'primary.background',
-                    borderRadius: 2,
-                    padding: 2,
-                    marginBottom: 5,
-                    width: "100%"
-                }}>
-                    <Typography variant="h4" sx={{marginBottom: 3, textAlign: 'center', width:"100%"}}>{`Ratings`}</Typography>
-                    <ProfessorRatingsComponent profData={profData} reviewList={reviewData}></ProfessorRatingsComponent>
-                </Box>
-            </Box>
-        </Container>
+            </Container>
+        </div>
     );
 };
