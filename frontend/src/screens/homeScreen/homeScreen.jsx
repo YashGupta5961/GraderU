@@ -136,9 +136,10 @@ function HomeScreen() {
                     backgroundColor: "primary.background",
                     display: "flex",
                     flexDirection: "column",
+                    paddingBottom: "100%",
                 }}
             >
-                <div className="homescreen-search">
+                <div className="homescreen-search" >
                     <TextField
                         id="search-bar"
                         className="homescreen-searchbox"

@@ -2,13 +2,17 @@ import React from 'react'
 import logo from "../../assets/logo.png";
 import profile from "../../assets/profile.png";
 import './header.css'
+import { Typography } from '@mui/material';
+
 function Header() {
     return (
         <div className="app-header">
             <div className="header-row-1">
                 <div className="app-header-title">
                     <img className="logo" src={logo} alt="logo" />
-                    <p>GraderU</p>
+                    <Typography component="h1" variant="h2">
+                        GraderU
+                    </Typography>
                 </div>
 
                 <button className="app-header-profile-btn">
