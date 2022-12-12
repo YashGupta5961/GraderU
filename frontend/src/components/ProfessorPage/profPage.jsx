@@ -3,9 +3,9 @@ import { Button, TextField, Box, FormControl, IconButton, InputLabel, List, Menu
 import axios from 'axios'
 import { number } from "prop-types";
 import { Typography } from '@mui/material';
-import PropTypes from "prop-types";
 import "./profPage.scss"
 import ProfessorRatingsComponent from "../ratings/profRatingsComponent";
+import { useSearchParams } from "react-router-dom";
 
 function avgGpaProf(data, prof_name) {
     let toreturn = 0;
@@ -48,12 +48,15 @@ export default function ProfPage(props) {
     const [reviewData, changeReviewData] = useState([]);
     const [isDataInit, changeDataInit] = useState(false);
     const [avgRating, changeAvgRating] = useState(0);
+    const [searchParams, _setSearchParams] = useSearchParams();
+
+    const profNameParam = searchParams.get('profName');
 
     // Data fetching using our API through axios and loading into state variables to be used throughout the page
     useEffect(() => {
         const fetch_prof_data = async function() {
             // Get Prof data 
-            const profUrl = `https://graderu.herokuapp.com/api/v1/professors?name=${props.profName}`;
+            const profUrl = `https://graderu.herokuapp.com/api/v1/professors?name=${profNameParam}`;
             const {data: {
                 data: results
             }} = await axios.get(profUrl);
@@ -95,7 +98,7 @@ export default function ProfPage(props) {
                     data: results
                 }} = await axios.get(url);
 
-                updateGPA(avgGpaProf(results, props.profName))
+                updateGPA(avgGpaProf(results, profNameParam))
             }
             fetch_course_data()
         }, []);
@@ -121,7 +124,7 @@ export default function ProfPage(props) {
     return !isDataInit ? (<></>) : (
         <Container className="profPage">
             <Box sx={{mt: 5}}>
-                <Typography variant="h3">{`Professor Name: ${props.profName}`}</Typography>
+                <Typography variant="h3">{`Professor Name: ${profNameParam}`}</Typography>
                 <Typography variant="h5">{`Average Rating: ${avgRating}`}</Typography>
                 <Box>
                     <div className="row">
@@ -140,7 +143,7 @@ export default function ProfPage(props) {
                     </div>
                     <div>
                         {profData.courseData.map((val, idx) =>
-                            <CourseItem data={val} key={idx} profName={props.profName}/>
+                            <CourseItem data={val} key={idx} profName={profNameParam}/>
                         )}
                     </div>
                 </Box>
@@ -151,8 +154,3 @@ export default function ProfPage(props) {
         </Container>
     );
 };
-
-
-ProfPage.propTypes = {
-    profName: PropTypes.string.isRequired
-}

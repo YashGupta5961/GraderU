@@ -3,9 +3,9 @@ import { Button, TextField, Box, FormControl, IconButton, InputLabel, List, Menu
 import axios from 'axios'
 import { Typography } from '@mui/material';
 import GraphComponent from "../Graph/graph.jsx"
-import PropTypes from "prop-types";
 import "./styles/styles.scss";
 import CourseRatingsComponent from "../ratings/courseRatingsComponent.jsx";
+import { useSearchParams } from "react-router-dom";
 
 function transformCourseData(data) {
     let mainData = new Map();
@@ -60,10 +60,14 @@ export default function CoursePage(props) {
     const [isDataInit, changeInitState] = useState(false);
     const [reviewData, changeReviewData] = useState([]);
     const [faqData, changeFaqData] = useState([]);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const numberParam = searchParams.get('number');
+    const subjectParam = searchParams.get('subject');
 
     useEffect(() => {
         const fetch_data = async function() {
-            const url = `https://graderu.herokuapp.com/api/v1/courses?subject=${props.subject}&number=${props.number}`
+            const url = `https://graderu.herokuapp.com/api/v1/courses?subject=${subjectParam}&number=${numberParam}`
             const {data: {
                 data: results
             }} = await axios.get(url);
@@ -77,7 +81,7 @@ export default function CoursePage(props) {
             changeInitState(true);
         };
         fetch_data();
-    }, [props.subject, props.number]);
+    }, [subjectParam, numberParam]);
 
     useEffect(() => {
         if (!isDataInit) return;
@@ -159,8 +163,3 @@ export default function CoursePage(props) {
         </Container>
     );
 };
-
-CoursePage.propTypes = {
-    subject: PropTypes.string.isRequired,
-    number: PropTypes.number.isRequired,
-}
