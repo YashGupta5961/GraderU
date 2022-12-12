@@ -76,4 +76,4 @@ const App = (props) => {
         </ThemeProvider>
     );
 };
-export default App;
+
