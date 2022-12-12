@@ -1,4 +1,4 @@
-import { Button, FormControl, FormHelperText, Input, InputLabel, MenuItem, Rating, Select } from "@mui/material";
+import { Box, Button, FormControl, FormHelperText, Input, InputLabel, MenuItem, Rating, Select, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
@@ -80,18 +80,18 @@ export default function CreateReviewComponent(props) {
     let tooltip = (error === true) ? (<FormHelperText>{tooltipMessage}</FormHelperText>) : (<></>);
     return (
         <>
-            <div className="createReviewHeadingDiv">
-                <h1>Write a Review!</h1>
-            </div>
-            <div className="createReviewToolsDiv">
-                <div className="ratingsDiv">
-                    <p>Choose Rating</p>
+            <Box className="createReviewHeadingDiv">
+                <Typography variant="h4">Write a Review!</Typography>
+            </Box>
+            <Box className="createReviewToolsDiv">
+                <Box className="ratingsDiv">
+                    <Typography>Choose Rating</Typography>
                     <Rating className="ratingsTool" value={rating} onChange={(_, newValue) => {
                         if (newValue !== null) {
                             changeRatingValue(newValue);
                         }
                     }}/>
-                </div>
+                </Box>
                 
                 <FormControl className="createFilterFormControl">
                     <InputLabel>{`Choose ${props.filterField}`}</InputLabel>
@@ -120,8 +120,8 @@ export default function CreateReviewComponent(props) {
                         {termYearDropdownList}
                     </Select>
                 </FormControl>
-            </div>
-            <div className="createReviewTextBoxDiv">
+            </Box>
+            <Box className="createReviewTextBoxDiv">
                 <FormControl variant="standard" error={error} className="reviewTextBox">
                     <InputLabel>Enter Review</InputLabel>
                     <Input
@@ -132,12 +132,12 @@ export default function CreateReviewComponent(props) {
                     />
                     {tooltip}
                 </FormControl>
-            </div>
-            <div className="createReviewSubmitButtonDiv">
-                <Button className='reviewCloseButton' disabled={error} onClick={async () => {await handleSubmitReview(props.reviewDispatcher, props.filterField, termYearValue, props.constantField, filterValue, rating, textValue, props.closePopup);}}>
+            </Box>
+            <Box className="createReviewSubmitButtonDiv">
+                <Button variant="contained" className='reviewCloseButton' disabled={error} onClick={async () => {await handleSubmitReview(props.reviewDispatcher, props.filterField, termYearValue, props.constantField, filterValue, rating, textValue, props.closePopup);}}>
                     Submit
                 </Button>
-            </div>
+            </Box>
         </>
     );
 }

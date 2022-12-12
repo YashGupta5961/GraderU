@@ -162,7 +162,10 @@ export default function ProfessorRatingsComponent(props) {
                 </FormControl>
             </Box>
             <Box className='createModal' id={modalId}>
-                <Box className='ratingsCreateReview'>
+                <Box className='ratingsCreateReview' sx={{
+                    backgroundColor: 'primary.background',
+                    borderRadius: 5
+                }}>
                     <ProfCreateReviewComponent 
                         reviewDispatcher={generateNewReviews}
                         filterList={createReviewData}

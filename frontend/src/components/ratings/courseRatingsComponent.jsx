@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { FormControl, IconButton, InputLabel, List, MenuItem, Select } from '@mui/material';
+import { Box, FormControl, IconButton, InputLabel, List, MenuItem, Select } from '@mui/material';
 import axios from 'axios';
 import PropTypes from "prop-types";
 import { useEffect, useId, useState } from 'react';
@@ -131,8 +131,8 @@ export default function CourseRatingsComponent(props) {
     // Return Ratings component
     return (
     <>
-        <div className="ratingsComponent">
-            <div className="ratingsButtonsDiv">
+        <Box className="ratingsComponent">
+            <Box className="ratingsButtonsDiv">
                 <IconButton aria-label="addReview" className='ratingsAddButton' onClick={addButtonClick}>
                     <AddIcon />
                 </IconButton>
@@ -149,23 +149,26 @@ export default function CourseRatingsComponent(props) {
                         {filterDropdownList}
                     </Select>
                 </FormControl>
-            </div>
-            <div className='createModal' id={modalId}>
-                <div className='ratingsCreateReview'>
+            </Box>
+            <Box className='createModal' id={modalId}>
+                <Box className='ratingsCreateReview' sx={{
+                    backgroundColor: 'primary.background',
+                    borderRadius: 5
+                }}>
                     <CreateReviewComponent 
                         reviewDispatcher={generateNewReviews}
                         filterList={props.profData}
                         filterField={'professor'}
                         constantField={'course'}
                     />
-                </div> 
-            </div>
-            <div>
+                </Box> 
+            </Box>
+            <Box>
                 <List>
                     {filteredReviews}
                 </List>
-            </div>
-        </div>
+            </Box>
+        </Box>
     </>);
 };
 
