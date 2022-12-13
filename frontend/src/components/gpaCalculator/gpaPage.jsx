@@ -45,11 +45,17 @@ function quartileCalc(array1, aveg) {
 
     let standardD = variance ** (1 / 2);
 
-    let firstQuartile = aveg - 0.675 * standardD;
-    let middleQuartile = aveg;
-    let thridQuartile = aveg + 0.675 * standardD;
+    let tenthQ = aveg -0.625*standardD
+    let twentythQ = aveg -0.468 *standardD
+    let thritythQ = aveg -0.3125 *standardD
+    let fortythQ = aveg -0.156 *standardD
+    let fiftythQ = aveg
+    let sixtyth = aveg + 0.156*standardD 
+    let seventyQ = aveg + 0.3125*standardD 
+    let eightyQ = aveg + 0.468*standardD 
+    let ninetyQ = aveg + 0.625*standardD 
 
-    const quartileArr = [0, firstQuartile, middleQuartile, thridQuartile, 4.0];
+    const quartileArr = [0, tenthQ, twentythQ, thritythQ, fortythQ, fiftythQ, sixtyth, seventyQ, eightyQ, ninetyQ, 4.0];
     return quartileArr;
 }
 
@@ -116,10 +122,16 @@ function CourseItem(props) {
     const [curr_gpa, update_currGPA] = useState(props.data.course_gpa);
     const quartileToIdx = {
         0: 0,
-        25: 1,
-        50: 2,
-        75: 3,
-        100: 4,
+        10: 1,
+        20: 2,
+        30: 3, 
+        40: 4,
+        50: 5,
+        60: 6,
+        70: 7, 
+        80: 8, 
+        90: 9, 
+        100: 10
     };
     let gpa_distrib = props.data.course_distribution;
     useEffect(() => {
@@ -132,6 +144,10 @@ function CourseItem(props) {
         update_currGPA(newGpaValue);
         props.changeHandler(props.id, newGpaValue);
     };
+
+    const deleteCourse = () => {
+        props.removeCourse(props.id, props.data.course_name, props.data.course_prof)
+    }
 
     return (
         <Box className="entry" sx={{
@@ -151,7 +167,7 @@ function CourseItem(props) {
                     track={false}
                     valueLabelDisplay="auto"
                     defaultValue={50}
-                    step={25}
+                    step={10}
                     marks
                     min={0}
                     max={100}
@@ -160,6 +176,9 @@ function CourseItem(props) {
             </Box>
             <Box className="col last" id="course_curve">
                 <Typography variant="h5">{curr_gpa}</Typography>
+            </Box>
+            <Box className="close" onClick = {deleteCourse}>
+                <Typography variant="h10">x</Typography>
             </Box>
         </Box>
     );
@@ -177,6 +196,7 @@ export default function GpaPage(props) {
     const [professors, updateProfessors] = useState([]);
     const [gpaMap, changeGpaMap] = useState({});
 
+    
     // Data fetching using our API through axios and loading into state variables to be used throughout the page
     useEffect(() => {
         const fetch_data = async function () {
@@ -224,6 +244,13 @@ export default function GpaPage(props) {
     const handleChildComponentChange = (id, new_value) => {
         changeGpaMap({ ...gpaMap, [id]: new_value });
     }
+
+    const handleCourseRemoval = (id, course, professor) => {
+        changeCoursesAdded(coursesAdded.filter(item => (item.course_prof !== professor || item.course_name !== course)))
+        let updateMap = {...gpaMap};
+        delete updateMap[id];
+        changeGpaMap(updateMap);
+    };
 
     function addCourse() {
         let currCourse =
@@ -344,7 +371,7 @@ export default function GpaPage(props) {
                 <Box sx={{marginBottom: 2}}>
                     {coursesAdded.map((e, idx) => (
                         <Box key={idx} sx={{marginBottom: 2}}>
-                            <CourseItem data={e} id={genId(e)} changeHandler={handleChildComponentChange} />
+                            <CourseItem data={e} id={genId(e)} changeHandler={handleChildComponentChange} removeCourse={handleCourseRemoval}/>
                         </Box>
                     ))}
                 </Box>
