@@ -26,7 +26,7 @@ exports.updateReview = catchAsync(async (req, res, next) => {
 
   if (like === -1) {
     await Review.findByIdAndUpdate(req.params.id, {
-      $push: { dislikes: req.user._id, $sort: 1 },
+      $addToSet: { dislikes: req.user._id, $sort: 1 },
     });
   } else if (like === 0) {
     await Review.findByIdAndUpdate(req.params.id, {
@@ -34,7 +34,7 @@ exports.updateReview = catchAsync(async (req, res, next) => {
     });
   } else {
     await Review.findByIdAndUpdate(req.params.id, {
-      $push: { likes: req.user._id, $sort: 1 },
+      $addToSet: { likes: req.user._id, $sort: 1 },
     });
   }
 

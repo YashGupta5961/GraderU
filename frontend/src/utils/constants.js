@@ -1,1 +1,1 @@
-exports.redirectTimeout = 4000;
+exports.redirectTimeout = 3000;

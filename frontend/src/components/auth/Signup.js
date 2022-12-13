@@ -31,7 +31,7 @@ const Signup = () => {
       );
       setTimeout(() => {
         navigate("/verify");
-      }, redirectTimeout);
+      }, redirectTimeout * 1.5);
     } catch (err) {
       setErrState(err.response.data.message);
       setSuccessState("");
