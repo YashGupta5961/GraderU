@@ -1,3 +1,4 @@
+import { Alert } from "@mui/material";
 import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -8,7 +9,6 @@ import React, { useState } from "react";
 import Header from "../../components/header/header";
 import HomeScreenCourseItem from "../../components/homeScreen/homeScreenCourseItem";
 import HomeScreenProfItem from "../../components/homeScreen/homeScreenProfItem";
-import { Alert } from "@mui/material";
 import "./homeScreen.css";
 
 function HomeScreen() {
@@ -36,7 +36,7 @@ function HomeScreen() {
 
             setData(result);
         } catch (err) {
-            setErr(err.message);
+            setErr('No results found');
         }
     };
 
@@ -62,16 +62,14 @@ function HomeScreen() {
 
             const result = await response.json();
             if (result.data.length === 0) {
-                setErr("No results found");
+                setErr('No results found');
             } else {
                 setErr("");
             }
 
-            console.log(result);
-
             setData(result);
         } catch (err) {
-            setErr(err.message);
+            setErr('No results found');
         }
     };
 
@@ -80,11 +78,9 @@ function HomeScreen() {
             if (filter === "Professor") {
                 setData({ data: [] });
                 handleProfAPICall(event.target.value);
-                console.log("Professor Search");
             } else if (filter === "Course") {
                 setData({ data: [] });
                 handleCourseAPICall(event.target.value);
-                console.log("Course Search");
             }
         }
     };
@@ -114,7 +110,6 @@ function HomeScreen() {
                         placeholder={
                             filter === "Professor" ? "Caesar, Matthew..." : "CS 374..."
                         }
-                        // onChange={handleChangeSearch}
                         onKeyDown={handleKeyDown}
                     />
 
@@ -175,7 +170,7 @@ function HomeScreen() {
                                 data.data.length > 0 ? (
                                     <HomeScreenCourseItem data={data.data[0]} />
                                 ) : (err !== "") ? (
-                                    <Alert severity="error">{err}</Alert>
+                                    <Alert severity="error">No results found</Alert>
                                 ) : (null)
                             }
                         </div>

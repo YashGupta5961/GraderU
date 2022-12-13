@@ -8,6 +8,8 @@ import CourseRatingsComponent from "../ratings/courseRatingsComponent.jsx";
 import { useSearchParams } from "react-router-dom";
 import Header from "../header/header.jsx";
 import api from "../../utils/api.js";
+import FAQItem from "../faq/FAQItem.js";
+import FAQComponent from "../faq/FAQComponent.js";
 
 function transformCourseData(data) {
     let mainData = new Map();
@@ -88,6 +90,7 @@ export default function CoursePage(props) {
             }
         };
         fetch_data();
+        console.log(faqData)
     }, [subjectParam, numberParam]);
 
     useEffect(() => {
@@ -179,7 +182,7 @@ export default function CoursePage(props) {
                     marginBottom: 5,
                     padding: 2
                 }}>
-                    <Typography sx={{ m: 0, textAlign: 'center' }}> Import FAQ Component here</Typography>
+                    <FAQComponent FAQList={faqData} />
                 </Box>
                 <Box sx={{
                     backgroundColor: 'primary.background',
