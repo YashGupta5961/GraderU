@@ -4,27 +4,19 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
-import { CssBaseline } from "@mui/material";
 import React, { useState } from "react";
-import HomeScreenProfItem from "../../components/homeScreen/homeScreenProfItem";
-import HomeScreenCourseItem from "../../components/homeScreen/homeScreenCourseItem";
-import "./homeScreen.css";
 import Header from "../../components/header/header";
+import HomeScreenCourseItem from "../../components/homeScreen/homeScreenCourseItem";
+import HomeScreenProfItem from "../../components/homeScreen/homeScreenProfItem";
+import { Alert } from "@mui/material";
+import "./homeScreen.css";
 
 function HomeScreen() {
     const [data, setData] = useState({ data: [] });
-    const [searchInput, setSearchInput] = useState("");
     const [filter, setFilter] = React.useState("Professor");
-    const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState("");
 
-    const handleChangeSearch = (event) => {
-        event.preventDefault();
-        setSearchInput(event.target.value);
-    };
-
     const handleProfAPICall = async (name) => {
-        setIsLoading(true);
         try {
             const response = await fetch(
                 "https://graderu.herokuapp.com/api/v1/professors?name=" + name,
@@ -45,13 +37,10 @@ function HomeScreen() {
             setData(result);
         } catch (err) {
             setErr(err.message);
-        } finally {
-            setIsLoading(false);
         }
     };
 
     const handleCourseAPICall = async (input) => {
-        setIsLoading(true);
         try {
             const words = input.split(" ");
             const response = await fetch(
@@ -72,23 +61,28 @@ function HomeScreen() {
             }
 
             const result = await response.json();
+            if (result.data.length === 0) {
+                setErr("No results found");
+            } else {
+                setErr("");
+            }
+
+            console.log(result);
 
             setData(result);
         } catch (err) {
             setErr(err.message);
-        } finally {
-            setIsLoading(false);
         }
     };
 
     const handleKeyDown = (event) => {
         if (event.key === "Enter" && event.target.value !== "") {
             if (filter === "Professor") {
-                setSearchInput(event.target.value);
+                setData({ data: [] });
                 handleProfAPICall(event.target.value);
                 console.log("Professor Search");
             } else if (filter === "Course") {
-                setSearchInput(event.target.value);
+                setData({ data: [] });
                 handleCourseAPICall(event.target.value);
                 console.log("Course Search");
             }
@@ -120,7 +114,7 @@ function HomeScreen() {
                         placeholder={
                             filter === "Professor" ? "Caesar, Matthew..." : "CS 374..."
                         }
-                        onChange={handleChangeSearch}
+                        // onChange={handleChangeSearch}
                         onKeyDown={handleKeyDown}
                     />
 
@@ -180,15 +174,10 @@ function HomeScreen() {
                             {
                                 data.data.length > 0 ? (
                                     <HomeScreenCourseItem data={data.data[0]} />
-                                ): (<div/>)
+                                ) : (err !== "") ? (
+                                    <Alert severity="error">{err}</Alert>
+                                ) : (null)
                             }
-
-                            {/* <HomeScreenCourseItem data={data.data[0]} /> */}
-                            {/* {data.data.map((item) => (
-                                <li key={item._id}>
-                                    <HomeScreenCourseItem data={item} />
-                                </li>
-                            ))} */}
                         </div>
                     </div>
                 )}
