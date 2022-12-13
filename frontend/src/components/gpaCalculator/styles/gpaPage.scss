@@ -40,27 +40,6 @@
 
 //https://www.educative.io/answers/how-to-create-columns-in-html
 
-.column {
-    float: left;
-}
-
-.left {
-    width: 15%;
-    padding-left: 15% ;
-}
-
-.middle {
-    width: 15%;
-}
-
-.right {
-    width: 35%;
-}
-
-.last {
-    width: 15%;
-}
-
 .row:after {
     content: "";
     display: table;
@@ -68,5 +47,8 @@
 }
 
 .row {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
     padding-top: 3%;
 }

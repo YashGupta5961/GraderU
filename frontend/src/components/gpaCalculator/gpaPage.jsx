@@ -11,6 +11,8 @@ import {
     Select,
     Grid,
     Container,
+    Typography,
+    CssBaseline,
 } from "@mui/material";
 import "./styles/gpaPage.scss";
 import "../gpaCalculator/styles/courseItem.scss";
@@ -132,14 +134,17 @@ function CourseItem(props) {
     };
 
     return (
-        <div className="entry">
-            <div className="col left" id="course_name">
-                <h2>{props.data.course_name}</h2>
-            </div>
-            <div className="col middle" id="course_gpa">
-                <h2>{props.data.course_gpa}</h2>
-            </div>
-            <div className="col right" id="course_curve">
+        <Box className="entry" sx={{
+            borderRadius: 5,
+            backgroundColor: '#282828'
+        }}>
+            <Box className="col left" id="course_name">
+                <Typography variant="h5">{props.data.course_name}</Typography>
+            </Box>
+            <Box className="col middle" id="course_gpa">
+                <Typography variant="h5">{props.data.course_gpa}</Typography>
+            </Box>
+            <Box className="col right" id="course_curve">
                 <img className="curve" src={curve} />
                 <Slider
                     size="small"
@@ -152,11 +157,11 @@ function CourseItem(props) {
                     max={100}
                     onChange={handleSliderChange}
                 />
-            </div>
-            <div className="col last" id="course_curve">
-                <h2> {curr_gpa} </h2>
-            </div>
-        </div>
+            </Box>
+            <Box className="col last" id="course_curve">
+                <Typography variant="h5">{curr_gpa}</Typography>
+            </Box>
+        </Box>
     );
 }
 
@@ -247,14 +252,18 @@ export default function GpaPage(props) {
     return (
         <div>
             <Header />
-            <div className="gpaPage">
+            <Container className="gpaPage" sx={{
+                backgroundColor: 'primary.background',
+                marginTop: 5,
+                padding: 5,
+                borderRadius: 10
+            }}>
+                <CssBaseline />
                 <br></br>
-                <h1 id="pred">Your Predicted GPA is:</h1>
-                <br></br>
-                <h1 id="GPAVal"> {avgGPA.toFixed(2)} </h1>
-                <br></br>
-                <br></br>
+                <Typography variant="h4" id="pred">Your Predicted GPA is:</Typography>
+                <Typography variant="h4" id="GPAVal"> {avgGPA.toFixed(2)}</Typography>
 
+                <br></br>
                 <TextField
                     id="course-search"
                     label="Search Course"
@@ -304,29 +313,42 @@ export default function GpaPage(props) {
                     ADD COURSE{" "}
                 </Button>
 
-                <div className="row">
-                    <div className="column left">
-                        <h2>Courses</h2>
-                    </div>
-                    <div className="column middle">
-                        <h2>Course GPA</h2>
-                    </div>
-                    <div className="column right">
-                        <h2>Grade Distribution</h2>
-                    </div>
-                    <div className="column last">
-                        <h2>Your GPA</h2>
-                    </div>
-                </div>
+                <Box className="row" sx={{marginBottom: 5}}>
+                    <Box sx={{
+                        // paddingLeft: "4%",
+                        width: "12vw",
+                        textAlign: 'center',
+                    }}>
+                        <Typography variant="h5" sx={{textAlign: 'center'}}>Courses</Typography>
+                    </Box>
+                    <Box sx={{
+                        width: "13vw",
+                        textAlign: 'center'
+                    }}>
+                        <Typography variant="h5" sx={{textAlign: 'center'}}>Course GPA</Typography>
+                    </Box>
+                    <Box sx={{
+                        width: "18vw",
+                        textAlign: 'center'
+                    }}>
+                        <Typography noWrap variant="h5" sx={{textAlign: 'center'}}>Grade Distribution</Typography>
+                    </Box>
+                    <Box sx={{
+                        width: "13vw",
+                        textAlign: 'center'
+                    }}>
+                        <Typography variant="h5" sx={{textAlign: 'center'}}>Your GPA</Typography>
+                    </Box>
+                </Box>
 
-                <div>
+                <Box sx={{marginBottom: 2}}>
                     {coursesAdded.map((e, idx) => (
-                        <div key={idx}>
+                        <Box key={idx} sx={{marginBottom: 2}}>
                             <CourseItem data={e} id={genId(e)} changeHandler={handleChildComponentChange} />
-                        </div>
+                        </Box>
                     ))}
-                </div>
-            </div>
+                </Box>
+            </Container>
         </div>
     );
 }
