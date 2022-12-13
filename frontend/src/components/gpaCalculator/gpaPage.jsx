@@ -46,17 +46,17 @@ function quartileCalc(array1, aveg) {
 
     let standardD = variance ** (1 / 2);
 
-    let tenthQ = aveg -0.625*standardD
-    let twentythQ = aveg -0.468 *standardD
-    let thritythQ = aveg -0.3125 *standardD
-    let fortythQ = aveg -0.156 *standardD
+    let tenthQ = aveg -0.675*standardD
+    let twentythQ = aveg -0.50625 *standardD
+    let thritythQ = aveg -0.3375 *standardD
+    let fortythQ = aveg -0.16875 *standardD
     let fiftythQ = aveg
-    let sixtyth = aveg + 0.156*standardD 
-    let seventyQ = aveg + 0.3125*standardD 
-    let eightyQ = aveg + 0.468*standardD 
-    let ninetyQ = aveg + 0.625*standardD 
+    let sixtyth = aveg + 0.16875*standardD 
+    let seventyQ = aveg + 0.3375*standardD 
+    let eightyQ = aveg + 0.50625*standardD 
+    let ninetyQ = aveg + 0.675*standardD 
 
-    const quartileArr = [0, tenthQ, twentythQ, thritythQ, fortythQ, fiftythQ, sixtyth, seventyQ, eightyQ, ninetyQ, 4.0];
+    const quartileArr = [0, Math.max(tenthQ, 0), Math.max(twentythQ, 0), Math.max(thritythQ, 0), Math.max(fortythQ, 0), fiftythQ, Math.min(sixtyth, 4), Math.min(seventyQ, 4), Math.min(eightyQ, 4), Math.min(ninetyQ, 4), 4.0];
     return quartileArr;
 }
 
