@@ -8,6 +8,7 @@ import ProfessorRatingsComponent from "../ratings/profRatingsComponent";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { color } from "@mui/system";
 import Header from "../header/header";
+import api from "../../utils/api";
 
 function avgGpaProf(data, prof_name) {
     let toreturn = 0;
@@ -57,22 +58,24 @@ export default function ProfPage(props) {
     // Data fetching using our API through axios and loading into state variables to be used throughout the page
     useEffect(() => {
         const fetch_prof_data = async function () {
-            // Get Prof data 
-            const profUrl = `https://graderu.herokuapp.com/api/v1/professors?name=${profNameParam}`;
-            const { data: {
-                data: results
-            } } = await axios.get(profUrl);
-            updateProfData(transformProfessorData(results[0]));
+            try {
+                // Get Prof data 
+                const { data: {
+                    data: results
+                } } = await api.get(`/professors?name=${profNameParam}`);
+                updateProfData(transformProfessorData(results[0]));
 
-            const reviewUrl = `https://graderu.herokuapp.com/api/v1/reviews?professor=${results[0]["_id"]}`
-            const {
-                data: {
-                    data: reviewArr
-                }
-            } = await axios.get(reviewUrl);
+                const {
+                    data: {
+                        data: reviewArr
+                    }
+                } = await api.get(`/reviews?professor=${results[0]["_id"]}`);
 
-            changeReviewData(reviewArr);
-            changeDataInit(true);
+                changeReviewData(reviewArr);
+                changeDataInit(true);
+            } catch(e) {
+                console.log(e);
+            }
         };
         fetch_prof_data();
     }, []);
@@ -96,15 +99,18 @@ export default function ProfPage(props) {
 
         useEffect(() => {
             const fetch_course_data = async function () {
-                //API calls 
-                const url = `https://graderu.herokuapp.com/api/v1/courses?subject=${props.data.subject}&year=${props.data.year}&term=${props.data.term}&number=${props.data.number}`
-                const { data: {
-                    data: results
-                } } = await axios.get(url);
+                try {
+                    //API calls 
+                    const { data: {
+                        data: results
+                    } } = await api.get(`/courses?subject=${props.data.subject}&year=${props.data.year}&term=${props.data.term}&number=${props.data.number}`);
 
-                updateGPA(avgGpaProf(results, profNameParam))
+                    updateGPA(avgGpaProf(results, profNameParam));
+                } catch (e) {
+                    console.log(e);
+                }
             }
-            fetch_course_data()
+            fetch_course_data();
         }, []);
 
         const navigate = useNavigate();
@@ -116,11 +122,15 @@ export default function ProfPage(props) {
                 borderRadius: 5,
                 padding: 2,
                 boxShadow: "0px 5px 10px 0px rgba(0, 0, 0, 0.5)",
-                cursor: 'pointer'
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
             }}>
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
+                    width: "100%"
                 }}>
                     <Typography variant="h5">{props.data.subject}{props.data.number} : {props.data.name}</Typography>
                     <Typography variant="h5">{props.data.term} {props.data.year}</Typography>
@@ -128,6 +138,7 @@ export default function ProfPage(props) {
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'left',
+                    width: "100%"
                 }}>
                     <Typography variant="h5">Average GPA: {avgGPA}</Typography>
                 </Box>
