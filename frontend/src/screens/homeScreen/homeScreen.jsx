@@ -176,13 +176,20 @@ function HomeScreen() {
                                 : {}
                         }
                     >
-                        <ul className="homescreen-results-list">
-                            {data.data.map((item) => (
+                        <div className="homescreen-results-list">
+                            {
+                                data.data.length > 0 ? (
+                                    <HomeScreenCourseItem data={data.data[0]} />
+                                ): (<div/>)
+                            }
+
+                            {/* <HomeScreenCourseItem data={data.data[0]} /> */}
+                            {/* {data.data.map((item) => (
                                 <li key={item._id}>
                                     <HomeScreenCourseItem data={item} />
                                 </li>
-                            ))}
-                        </ul>
+                            ))} */}
+                        </div>
                     </div>
                 )}
             </Container>
