@@ -39,7 +39,7 @@ function FAQComponent(props) {
                     FAQs
                 </Typography>
 
-                <Box className="ratingsButtonsDiv">
+                {/* <Box className="ratingsButtonsDiv">
                     <IconButton aria-label="addReview" className='ratingsAddButton' onClick={
                         () => {
                             modalDiv.style.display = 'block';
@@ -47,7 +47,7 @@ function FAQComponent(props) {
                     }>
                         < AddIcon />
                     </IconButton>
-                </Box>
+                </Box> */}
 
                 <Box className='createModalFAQ' id={modalId}>
                     <Box className='faqCreateReview' sx={{
