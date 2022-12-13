@@ -14,8 +14,7 @@ function HomeScreenCourseItem(props) {
       }
     >
       <p>
-        {props.data.subject} {props.data.number} - {props.data.name} (
-        {props.data.term} {props.data.year})
+        {props.data.subject} {props.data.number} - {props.data.name}
       </p>
     </div>
   );
