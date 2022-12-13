@@ -26,6 +26,7 @@ function Header() {
     const handleLogout = async () => {
         try {
             await api.get("/users/logout");
+            setIsLoggedIn(false);
         } catch (err) {
             console.log(err);
         }
@@ -103,7 +104,12 @@ function Header() {
                     {
                         isLoggedIn
                             ? (<MenuItem onClick={handleLogout}>Logout</MenuItem>)
-                            : (<MenuItem onClick={() => { navigate("/login"); }} > Log In </MenuItem>)
+                            : (
+                                <div>
+                                    <MenuItem onClick={() => { navigate("/register"); }} > Register </MenuItem>
+                                    <MenuItem onClick={() => { navigate("/login"); }} > Log In </MenuItem>
+                                </div>
+                            )
                     }
                 </Menu>
             </div>
