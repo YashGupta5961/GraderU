@@ -1,12 +1,11 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, FormControl, IconButton, InputLabel, List, MenuItem, Select } from '@mui/material';
-import axios from 'axios';
 import PropTypes from "prop-types";
 import { useEffect, useId, useState } from 'react';
 import ReviewItem from './reviewItem';
-import Popup from 'reactjs-popup';
 import CreateReviewComponent from './createReview';
-// import 'reactjs-popup/dist/index.css';
+import api from "../../utils/api";
+
 import './styles/styles.scss';
 
 export default function CourseRatingsComponent(props) {
@@ -28,46 +27,52 @@ export default function CourseRatingsComponent(props) {
     const modalDiv = document.getElementById(modalId);
 
     async function generateNewReviews(update_type, packet, id) {
-        if (update_type === 'create') {
-            let url = `https://graderu.herokuapp.com/api/v1/reviews`;
-            const {
-                data: {
-                    status: statusVal,
-                    data: dataValue
-                }
-            } = await axios.post(url, packet);
-
-            if (statusVal === "success") {
-               // Time to update local state
-               let newCourseReview = courseReviews; 
-               newCourseReview.push(dataValue);
-               changeCourseReviews(newCourseReview);
-            }
-        } else if (update_type === 'update') {
-            let url = `https://graderu.herokuapp.com/api/v1/reviews/${id}`;
-            const {
-                data: {
-                    status: statusVal,
-                    data: dataValue
-                }
-            } = await axios.patch(url, packet);
-
-            if (statusVal === "success") {
-                // Time to update local state
-                let newCourseReview = courseReviews; 
-                for (let i = 0; i < newCourseReview.length; i++) {
-                    if (newCourseReview[i]["_id"] === dataValue["_id"]) {
-                        newCourseReview[i] = dataValue;
-                        changeCourseReviews(newCourseReview);
-                        break;
+        try {
+            if (update_type === 'create') {
+                const {
+                    data: {
+                        status: statusVal,
+                        data: dataValue
                     }
+                } = await api.post("/reviews", packet);
+    
+                if (statusVal === "success") {
+                   // Time to update local state
+                   changeCourseReviews([...courseReviews, dataValue]);
+                }
+    
+            } else if (update_type === 'update') {
+                const {
+                    data: {
+                        status: statusVal,
+                        data: dataValue
+                    }
+                } = await api.patch(`/reviews/${id}`, packet);
+    
+                if (statusVal === "success") {
+                    // Time to update local state
+                    let newCourseReview = []; 
+                    for (let i = 0; i < courseReviews.length; i++) {
+                        if (courseReviews[i]._id === dataValue._id) {
+                            newCourseReview.push(dataValue);
+                        } else {
+                            newCourseReview.push(courseReviews[i]);
+                        }
+                    }
+                    changeCourseReviews(newCourseReview);
                 }
             }
+        } catch (e) {
+            console.log(e);
         }
     }
 
     function addButtonClick() {
         modalDiv.style.display = "block";
+    }
+
+    function closeButtonClick() {
+        modalDiv.style.display = "none";
     }
 
     window.onclick = function(event) {
@@ -79,17 +84,21 @@ export default function CourseRatingsComponent(props) {
     // Get all reviews
     useEffect(() => {
         const getReviews = async function() {
-            let tempReviewList = [];
-            for (let i = 0; i < props.reviewList.length; i++) {
-                let val = props.reviewList[i];
-                const {
-                    data: {
-                        data: reviewData
-                    }
-                } = await axios.get(`https://graderu.herokuapp.com/api/v1/reviews/${val}`);
-                tempReviewList.push(reviewData);
+            try {
+                let tempReviewList = [];
+                for (let i = 0; i < props.reviewList.length; i++) {
+                    let val = props.reviewList[i];
+                    const {
+                        data: {
+                            data: reviewData
+                        }
+                    } = await api.get(`/reviews/${val}`);
+                    tempReviewList.push(reviewData);
+                }
+                changeCourseReviews(tempReviewList);
+            } catch (e) {
+                console.log(e);
             }
-            changeCourseReviews(tempReviewList);
         };
         if (courseReviews.length === 0) getReviews();
     }, [props.reviewList]);
@@ -160,6 +169,7 @@ export default function CourseRatingsComponent(props) {
                         filterList={props.profData}
                         filterField={'professor'}
                         constantField={'course'}
+                        closeButtonfn={closeButtonClick}
                     />
                 </Box> 
             </Box>

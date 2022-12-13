@@ -20,6 +20,7 @@ import curve from "../gpaCalculator/styles/bellcurve.png";
 import { Slider } from "@mui/material";
 import Header from "../header/header";
 import axios from "axios";
+import api from "../../utils/api";
 // import { number } from "prop-types";
 
 /* This function takes in the grade distribution array and the average array 
@@ -180,12 +181,15 @@ export default function GpaPage(props) {
     // Data fetching using our API through axios and loading into state variables to be used throughout the page
     useEffect(() => {
         const fetch_data = async function () {
-            let ci = courseInput.replace(/\s/g, "").toUpperCase();
-            const url = `https://graderu.herokuapp.com/api/v1/courses?subject=${ci}&number=${numberInput}`;
-            const {
-                data: { data: results },
-            } = await axios.get(url);
-            updateCourseMap(gpaPerProf(results));
+            try {
+                let ci = courseInput.replace(/\s/g, "").toUpperCase();
+                const {
+                    data: { data: results },
+                } = await api.get(`/courses?subject=${ci}&number=${numberInput}`);
+                updateCourseMap(gpaPerProf(results));
+            } catch (e) {
+                console.log(e);
+            } 
         };
         if (courseInput.length >= 2 && numberInput.length === 3) {
             fetch_data();

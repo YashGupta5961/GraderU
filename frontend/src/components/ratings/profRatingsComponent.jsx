@@ -1,13 +1,11 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, FormControl, IconButton, InputLabel, List, MenuItem, Select } from '@mui/material';
-import axios from 'axios';
 import PropTypes from "prop-types";
 import { useEffect, useId, useState } from 'react';
 import ReviewItem from './reviewItem';
-import Popup from 'reactjs-popup';
-// import 'reactjs-popup/dist/index.css';
 import './styles/styles.scss';
 import ProfCreateReviewComponent from './profCreateReview';
+import api from '../../utils/api';
 
 export default function ProfessorRatingsComponent(props) {
     // Create local state variables
@@ -32,45 +30,45 @@ export default function ProfessorRatingsComponent(props) {
 
     async function generateNewReviews(update_type, packet, id) {
         if (update_type === 'create') {
-            let url = `https://graderu.herokuapp.com/api/v1/reviews`;
             const {
                 data: {
                     status: statusVal,
                     data: dataValue
                 }
-            } = await axios.post(url, packet);
+            } = await api.post('/reviews', packet);
 
-            if (statusVal === "success") {
+            if (statusVal === 'success') {
                // Time to update local state
-               let newCourseReview = courseReviews; 
-               newCourseReview.push(dataValue);
-               changeCourseReviews(newCourseReview);
+               changeCourseReviews([...courseReviews, dataValue]);
             }
         } else if (update_type === 'update') {
-            let url = `https://graderu.herokuapp.com/api/v1/reviews/${id}`;
             const {
                 data: {
                     status: statusVal,
                     data: dataValue
                 }
-            } = await axios.patch(url, packet);
-
-            if (statusVal === "success") {
+            } = await api.patch(`/reviews/${id}`, packet);
+            if (statusVal === 'success') {
                 // Time to update local state
-                let newCourseReview = courseReviews; 
-                for (let i = 0; i < newCourseReview.length; i++) {
-                    if (newCourseReview[i]["_id"] === dataValue["_id"]) {
-                        newCourseReview[i] = dataValue;
-                        changeCourseReviews(newCourseReview);
-                        break;
+                let newCourseReview = []; 
+                for (let i = 0; i < courseReviews.length; i++) {
+                    if (courseReviews[i]._id === dataValue._id) {
+                        newCourseReview.push(dataValue);
+                    } else {
+                        newCourseReview.push(courseReviews[i]);
                     }
                 }
+                changeCourseReviews(newCourseReview);
             }
         }
     }
 
     function addButtonClick() {
         modalDiv.style.display = "block";
+    }
+
+    function closeButtonClick() {
+        modalDiv.style.display = "none";
     }
 
     window.onclick = function(event) {
@@ -137,7 +135,7 @@ export default function ProfessorRatingsComponent(props) {
                 );
             }));
         }
-    }, [filterValue, courseReviews]);
+    }, [filterValue, courseReviews, props.profData]);
 
     // Return Ratings component
     return (
@@ -171,6 +169,7 @@ export default function ProfessorRatingsComponent(props) {
                         filterList={createReviewData}
                         filterField={'course'}
                         constantField={'professor'}
+                        closeButtonfn={closeButtonClick}
                     />
                 </Box> 
             </Box>

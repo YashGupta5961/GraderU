@@ -134,7 +134,7 @@ export default function ProfCreateReviewComponent(props) {
                 </FormControl>
             </Box>
             <Box className="createReviewSubmitButtonDiv">
-                <Button variant="contained" className='reviewCloseButton' disabled={error} onClick={async () => {await handleSubmitReview(props.reviewDispatcher, props.filterField, termYearValue, props.constantField, filterValue, rating, textValue, props.closePopup);}}>
+                <Button variant="contained" className='reviewCloseButton' disabled={error} onClick={async () => {await handleSubmitReview(props.reviewDispatcher, props.filterField, filterValue, props.constantField, termYearValue, rating, textValue, props.closePopup);}}>
                     Submit
                 </Button>
             </Box>

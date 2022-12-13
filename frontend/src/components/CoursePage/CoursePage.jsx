@@ -7,6 +7,7 @@ import "./styles/styles.scss";
 import CourseRatingsComponent from "../ratings/courseRatingsComponent.jsx";
 import { useSearchParams } from "react-router-dom";
 import Header from "../header/header.jsx";
+import api from "../../utils/api.js";
 
 function transformCourseData(data) {
     let mainData = new Map();
@@ -70,18 +71,21 @@ export default function CoursePage(props) {
 
     useEffect(() => {
         const fetch_data = async function () {
-            const url = `https://graderu.herokuapp.com/api/v1/courses?subject=${subjectParam}&number=${numberParam}`
-            const { data: {
-                data: results
-            } } = await axios.get(url);
-
-            let [mainData, newReviewData, newfaqData] = transformCourseData(results);
-
-            setdata(mainData);
-            changeFaqData(newfaqData);
-            changeReviewData(newReviewData);
-
-            changeInitState(true);
+            try {
+                const { data: {
+                    data: results
+                } } = await api.get(`/courses?subject=${subjectParam}&number=${numberParam}`);
+    
+                let [mainData, newReviewData, newfaqData] = transformCourseData(results);
+    
+                setdata(mainData);
+                changeFaqData(newfaqData);
+                changeReviewData(newReviewData);
+    
+                changeInitState(true);
+            } catch (e) {
+                console.log(e);
+            }
         };
         fetch_data();
     }, [subjectParam, numberParam]);
@@ -183,6 +187,7 @@ export default function CoursePage(props) {
                     padding: 2,
                     marginBottom: 5,
                 }}>
+                    <Typography variant="h4" sx={{ marginBottom: 3, textAlign: 'center', width: "100%" }}>{`Ratings`}</Typography>
                     <CourseRatingsComponent profData={data} reviewList={reviewData} />
                 </Box>
             </Container>

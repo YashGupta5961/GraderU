@@ -1,13 +1,14 @@
-import { ListItem, ListItemAvatar, ListItemText, Rating, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Box, ListItem, ListItemAvatar, ListItemText, Rating, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import PropTypes from "prop-types";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import FaceIcon from '@mui/icons-material/Face';
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../utils/api";
+import { padding } from "@mui/system";
 
 function stringSearch(array, str) {
-    if (array === null || array === undefined) return -1;
+    if (str === null || str === undefined) return -1;
 
     let len = array.length - 1;
     let m = 0;
@@ -26,13 +27,18 @@ function stringSearch(array, str) {
 }
 export default function ReviewItem(props) {
     const [likeDislikeButton, changeLikeDislikeValue] = useState(null);
-    const totalLength = (props.data["likes"].length + props.data["dislikes"].length) === 0 ? 1 : props.data["likes"].length + props.data["dislikes"].length;
-    const likeDislikeRatio = Math.floor((props.data["likes"].length / totalLength) * 100);
+    const [likeDislikeRatio, changeLikeDislikeRatio] = useState(0.0);
+    const [mUserId, changeUserId] = useState(undefined);
+
+    useEffect(() => {
+        const totalLength = (props.data["likes"].length + props.data["dislikes"].length) === 0 ? 1 : props.data["likes"].length + props.data["dislikes"].length;
+        changeLikeDislikeRatio(Math.floor((props.data["likes"].length / totalLength) * 100));
+    }, [props.data]);
 
     let profName = '';
     let courseTerm = '';
     let courseYear = '';
-
+    
     for (let i = 0; i < props.profData.length; i++) {
         let val = props.profData[i];
         if (val["profId"] === props.data.professor) {
@@ -50,60 +56,109 @@ export default function ReviewItem(props) {
     }
 
     const getUserId = async function () {
-        const {
-            data: {
-                data: {
-                    _id: userId
-                }
-            }
-        } = await axios.get(`https://graderu.herokuapp.com/api/v1/users/me`);
-        return userId;
+        try {
+            const res = await api.get(`/users/me`);
+            console.log(res.data.data._id);
+            return `${res.data.data._id}`;
+        } catch (e) {
+            console.log(e);
+            return undefined;
+        }
     };
 
     useEffect(() => {
         const searchIds = async function() {
-            let userId = await getUserId();
-            let like_out = stringSearch(props.data.likes, userId);
-            if (like_out >= 0) {
-                changeLikeDislikeValue(1);
+            let userId = undefined;
+            if (mUserId === undefined) {
+                userId = await getUserId();
+                changeUserId(userId);
             } else {
-                let dislike_out = stringSearch(props.data.dislikes, userId);
-                if (dislike_out >= 0) {
-                    changeLikeDislikeValue(-1);
-                } else {
-                    changeLikeDislikeValue(null);
+                userId = mUserId;
+            }
+
+            if (userId === undefined) return;
+            for (let i = 0; i < props.data.likes.length; i++) {
+                if (props.data.likes[i] === userId) {
+                    changeLikeDislikeValue(1);
+                    return;
                 }
             }
+
+            for (let i = 0; i < props.data.dislikes.length; i++) {
+                if (props.data.dislikes[i] === userId) {
+                    changeLikeDislikeValue(-1);
+                    return;
+                }
+            }
+            changeLikeDislikeValue(null);
         };
+        
         searchIds();
-    }, [props.data.likes, props.data.dislikes]);
+    }, [props.data, mUserId]);
 
     return (
         <>
         <ListItem alignItems="flex-start">
-            <div>
-                <ListItemAvatar>
-                    <FaceIcon/>
-                </ListItemAvatar>
-                <Rating value={props.data.rating} readOnly/>
-            </div>
-            <ListItemText 
-                primary={`Professor: ${profName} Term: ${courseTerm} ${courseYear}`}
-                secondary={props.data.text}
-            />
-            <div>
-                <ListItemText primary={`${likeDislikeRatio}% liked this`} />
-                <ToggleButtonGroup exclusive value={likeDislikeButton} onChange={(_, newValue) => {
-                    // Normalize value
-                    let tempValue = (newValue === null) ? 0 : newValue;
-
-                    // Send it to the dispatcher. State will be updated using useEffect hook.
-                    props.reviewDataDispatcher('update', {like: tempValue}, props.data["_id"]);
+            <Box sx={{
+                alignItems:"flex-start",
+                display: 'flex',
+                justifyContent: 'space-evenly',
+                alignContent: 'center',
+                width: "100%",
+                backgroundColor: '#282828',
+                padding: 1,
+                borderRadius: 5,
+                boxShadow: "0px 5px 10px 0px rgba(0, 0, 0, 0.5)",
+            }}>
+                <Box sx={{
+                    width: "20%",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    alignSelf: 'center'
                 }}>
-                    <ToggleButton value={1}><ThumbUpIcon/></ToggleButton>
-                    <ToggleButton value={-1}><ThumbDownIcon/></ToggleButton>
-                </ToggleButtonGroup>
-            </div>
+                    <ListItemAvatar sx={{
+                        textAlign: 'center'
+                    }}>
+                        <FaceIcon/>
+                    </ListItemAvatar>
+                    <Rating value={props.data.rating} readOnly/>
+                </Box>
+                <Box sx={{
+                    width: "60%",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'left',
+                    justifyContent: 'center',
+                    alignSelf: 'center'
+                }}>
+                    <ListItemText 
+                        primary={`Review for ${profName} (${courseTerm} ${courseYear}): `}
+                        secondary={props.data.text}
+                    />
+                </Box>
+                <Box sx={{
+                    width: "20%",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    alignSelf: 'center'
+                }}>
+                    <ListItemText primary={`${likeDislikeRatio}% liked this`} />
+                    <ToggleButtonGroup exclusive value={likeDislikeButton} onChange={(_, newValue) => {
+                        // Normalize value
+                        let tempValue = (newValue === null) ? 0 : newValue;
+                        // Send it to the dispatcher. State will be updated using useEffect hook.
+                        props.reviewDataDispatcher('update', {like: tempValue}, props.data["_id"]);
+                        if (newValue === null) changeLikeDislikeValue(null);
+                    }}>
+                        <ToggleButton value={1}><ThumbUpIcon/></ToggleButton>
+                        <ToggleButton value={-1}><ThumbDownIcon/></ToggleButton>
+                    </ToggleButtonGroup>
+                </Box>
+            </Box>
         </ListItem>
         </>
     );

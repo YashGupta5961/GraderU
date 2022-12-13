@@ -134,7 +134,10 @@ export default function CreateReviewComponent(props) {
                 </FormControl>
             </Box>
             <Box className="createReviewSubmitButtonDiv">
-                <Button variant="contained" className='reviewCloseButton' disabled={error} onClick={async () => {await handleSubmitReview(props.reviewDispatcher, props.filterField, termYearValue, props.constantField, filterValue, rating, textValue, props.closePopup);}}>
+                <Button variant="contained" className='reviewCloseButton' disabled={error} onClick={async () => {
+                    await handleSubmitReview(props.reviewDispatcher, props.filterField, filterValue, props.constantField, termYearValue, rating, textValue, props.closePopup);
+                    props.closeButtonfn();
+                }}>
                     Submit
                 </Button>
             </Box>
@@ -155,4 +158,5 @@ CreateReviewComponent.propTypes = {
         })).isRequired
     })).isRequired,
     reviewDispatcher: PropTypes.func.isRequired,
+    closeButtonfn: PropTypes.func.isRequired
 }
