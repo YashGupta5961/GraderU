@@ -2,7 +2,7 @@ import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import profile from "../../assets/profile.png";
@@ -11,6 +11,8 @@ import "./header.css";
 
 function Header() {
     const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+    const [isVerified, setIsVerified] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -29,6 +31,27 @@ function Header() {
         }
         setAnchorEl(null);
     };
+
+    useEffect(() => {
+        checkLogin();
+    }, []);
+
+    async function checkLogin() {
+        try {
+            const res = await api.get("/users/me");
+            if (res.data.data.verified) {
+                setIsLoggedIn(true);
+                setIsVerified(true);
+            }
+            else {
+                alert("You are not verified!");
+            }
+        } catch (err) {
+            setIsLoggedIn(false);
+            setIsVerified(true);
+            console.log(err.response.data.message);
+        }
+    }
 
     return (
         <div className="app-header">
@@ -71,14 +94,17 @@ function Header() {
                         "aria-labelledby": "user-button",
                     }}
                 >
-                    <MenuItem
-                        onClick={() => {
-                            navigate("/verify");
-                        }}
-                    >
-                        Verify
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    {
+                        !isVerified
+                            ? (<MenuItem onClick={() => { navigate("/verify"); }}>Verify</MenuItem>)
+                            : (null)
+                    }
+
+                    {
+                        isLoggedIn
+                            ? (<MenuItem onClick={handleLogout}>Logout</MenuItem>)
+                            : (<MenuItem onClick={() => { navigate("/login"); }} > Log In </MenuItem>)
+                    }
                 </Menu>
             </div>
 
