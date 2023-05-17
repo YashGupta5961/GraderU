@@ -30,7 +30,7 @@ GraderU is a website that utilizes grade distribution data gathered from FOIA re
 
 ## Usage
 
-To access GraderU, visit [www.graderu.herokuapp.com](https://graderu.herokuapp.com). Please note that the website may not be responsive and is optimized for standard desktop viewports.
+To access GraderU, visit [graderu.herokuapp.com](https://graderu.herokuapp.com). Please note that the website may not be responsive and is optimized for standard desktop viewports.
 
 ## Known Issues and Future Development
 
